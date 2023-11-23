@@ -21,5 +21,5 @@ MiInspectMethodsInPathMenuItem >> label [
 { #category : #accessing }
 MiInspectMethodsInPathMenuItem >> order [
 
-	^ 102
+	^ self defaultOrder + 2
 ]

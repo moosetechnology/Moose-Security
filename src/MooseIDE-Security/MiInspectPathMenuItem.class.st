@@ -1,6 +1,6 @@
 Class {
 	#name : #MiInspectPathMenuItem,
-	#superclass : #HNodeMenuItem,
+	#superclass : #MiCallGraphMenuItem,
 	#category : #'MooseIDE-Security'
 }
 
@@ -8,12 +8,6 @@ Class {
 MiInspectPathMenuItem >> canBeExecuted [
 
 	^ shape isShape
-]
-
-{ #category : #accessing }
-MiInspectPathMenuItem >> group [
-
-	^ 100
 ]
 
 { #category : #accessing }
@@ -39,7 +33,7 @@ MiInspectPathMenuItem >> label [
 { #category : #accessing }
 MiInspectPathMenuItem >> order [
 
-	^ 101
+	^ self defaultOrder + 1
 ]
 
 { #category : #accessing }

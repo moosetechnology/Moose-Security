@@ -1,3 +1,10 @@
+"
+I am a browser that displays a call graph.
+Accepted entities: a FamixTMethod.
+
+When passing over a method, I show the path going from the root method to the highlighted method.
+You can select or inspect this path from the context menu.
+"
 Class {
 	#name : #MiCallGraphBrowser,
 	#superclass : #MiAbstractVisualizationBrowser,

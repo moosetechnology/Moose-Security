@@ -8,5 +8,5 @@ Class {
 MiCallGraphMenuItemStrategy >> menuItemClassesFor: aShape [
 
 	^ (super menuItemClassesFor: aShape)
-	  , { MiInspectMethodsInPathMenuItem }
+	  , MiCallGraphMenuItem allSubclasses
 ]
