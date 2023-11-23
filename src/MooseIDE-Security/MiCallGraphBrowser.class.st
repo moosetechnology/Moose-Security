@@ -52,6 +52,7 @@ MiCallGraphBrowser >> canFollowEntity: anObject [
 MiCallGraphBrowser >> followEntity: anEntity [
 
 	specModel rootMethod: anEntity.
+	specModel buildGraph.
 	mainPresenter run
 ]
 

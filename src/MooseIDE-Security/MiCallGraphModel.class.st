@@ -16,7 +16,8 @@ MiCallGraphModel >> addGraphEdgesFrom: aMethod [
 
 	aMethod outgoingInvocations do: [ :invocation |
 		invocation candidates do: [ :candidate |
-			graphEdges at: aMethod at: candidate put: invocation ] ]
+			candidate isStub ifFalse: [
+				graphEdges at: aMethod at: candidate put: invocation ] ] ]
 ]
 
 { #category : #'as yet unclassified' }
@@ -35,7 +36,7 @@ MiCallGraphModel >> buildGraphFrom: aMethod [
 
 	(aMethod outgoingInvocations flatCollectAsSet: #candidates) do: [
 		:method |
-		(graphNodes includes: method) ifFalse: [
+		(method isStub or: [ graphNodes includes: method ]) ifFalse: [
 			self buildGraphFrom: method ] ]
 ]
 
@@ -67,15 +68,17 @@ MiCallGraphModel >> path: aSet fromRootTo: anEntity [
 	graphEdges keysAndValuesDo: [ :sender :receiverDict |
 		receiverDict at: anEntity ifPresent: [ :invocation |
 			senders add: sender.
-			"aSet add: invocation" ] ].
-	senders do: [ :sender | self path: aSet fromRootTo: sender ].
+			aSet add: invocation ] ].
+	senders do: [ :sender |
+		(aSet includes: sender) ifFalse: [
+			self path: aSet fromRootTo: sender ] ].
 	^ aSet
 ]
 
 { #category : #'as yet unclassified' }
 MiCallGraphModel >> pathFromRootTo: anEntity [
 
-	^ self path: Set new fromRootTo: anEntity
+	^ self path: OrderedCollection new fromRootTo: anEntity
 ]
 
 { #category : #accessing }

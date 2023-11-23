@@ -3,7 +3,8 @@ Class {
 	#superclass : #HSimpleVisualizationBuilder,
 	#instVars : [
 		'graphModel',
-		'nodesDictionary'
+		'nodesDictionary',
+		'linksDictionary'
 	],
 	#category : #'MooseIDE-Security'
 }
@@ -18,19 +19,21 @@ MiCallGraphBuilder >> build [
 	^ self container
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #building }
 MiCallGraphBuilder >> buildGraph [
-
-	graphModel buildGraph.
 
 	rootNode addAll: (graphModel graphNodes collect: [ :method |
 			 self nodeForMethod: method ]).
 
 	graphModel graphEdges do: [ :invocation |
 		invocation candidates do: [ :candidate |
-			(nodesDictionary at: invocation sender mooseID)
-				dependencyTo: (nodesDictionary at: candidate mooseID)
-				withModel: invocation ] ]
+			self linkForInvocation: invocation candidate: candidate ] ]
+]
+
+{ #category : #accessing }
+MiCallGraphBuilder >> graphModel [
+
+	^ graphModel
 ]
 
 { #category : #accessing }
@@ -42,50 +45,61 @@ MiCallGraphBuilder >> graphModel: aMiCallGraphModel [
 { #category : #'accessing - attributes' }
 MiCallGraphBuilder >> highlightable [
 
-	^ highlightable ifNil: [
-		  highlightable := RSHighlightable new
-			                   highlightShapes: [ :shape |
-				                   self pathFromRootTo: shape ];
-			                   when: RSHighlightEvent do: [ :evt |
-				                   highlightable
-					                   record: (self shapeToHighlightIn: evt shape)
-					                   selector: #color
-					                   value: Color red ]
-			                   for: self;
-			                   when: RSUnHighlightEvent do: [ :evt |
-				                   highlightable
-					                   restore: (self shapeToHighlightIn: evt shape)
-					                   selector: #color ]
-			                   for: self;
-			                   yourself ]
+	^ highlightable ifNil: [ highlightable := MiPathHighlight for: self ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #initialization }
 MiCallGraphBuilder >> initialize [
 
 	super initialize.
-	nodesDictionary := Dictionary new
+	nodesDictionary := Dictionary new.
+	linksDictionary := Dictionary new
 ]
 
-{ #category : #hooks }
-MiCallGraphBuilder >> nodeAnnouncer [
+{ #category : #'accessing - attributes' }
+MiCallGraphBuilder >> lineRepresenting: anInvocation inPath: aCollectionOfEntities [
 
-	baseNode ifNotNil: [ ^ baseNode announcer ].
-	baseNode := RSComposite new
-		            @ self popup;
-		            @
-			            (HGhostDraggable new color:
-					             Smalltalk ui theme caretColor);
-		            @ self menuInteraction;
-		            @ self highlightable;
-		            @ RSNodeOnTopWhenPositionChanged new;
-		            @ HUpdateSelectionBox new;
-		            @ HResizeParentWhenChildMoves new;
-		            yourself.
-	^ baseNode announcer
+	| candidatesInPath |
+
+	candidatesInPath := anInvocation candidates
+		                    select: [ :method |
+		                    aCollectionOfEntities includes: method ]
+		                    thenCollect: [ :method |
+			                    self container shapeFromModel:
+				                    (self nodesDictionaryAt: method mooseID) ].
+
+	^ candidatesInPath flatCollectAsSet: [ :rsShape |
+		  rsShape incomingLines select: [ :rsLine |
+			  rsLine model key rawModel = anInvocation sender ] ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #building }
+MiCallGraphBuilder >> linkForInvocation: invocation candidate: candidate [
+
+	| nodeForSender hLink nodeForCandidate |
+
+	nodeForSender := nodesDictionary at: invocation sender mooseID.
+	nodeForCandidate := nodesDictionary at: candidate mooseID.
+	hLink := nodeForSender
+		         dependencyTo: nodeForCandidate
+		         withModel: invocation.
+
+	^ linksDictionary at: nodeForSender -> nodeForCandidate put: hLink
+]
+
+{ #category : #accessing }
+MiCallGraphBuilder >> linksDictionaryAt: anAssociation [
+
+	^ linksDictionary at: anAssociation
+]
+
+{ #category : #'accessing - attributes' }
+MiCallGraphBuilder >> menuItemStrategy [
+
+	^ MiCallGraphMenuItemStrategy new
+]
+
+{ #category : #accessing }
 MiCallGraphBuilder >> nodeForMethod: aMethod [
 
 	| node |
@@ -100,30 +114,30 @@ MiCallGraphBuilder >> nodeForMethod: aMethod [
 	^ node
 ]
 
-{ #category : #'accessing - attributes' }
+{ #category : #accessing }
+MiCallGraphBuilder >> nodesDictionaryAt: aMooseID [
+
+	^ nodesDictionary at: aMooseID
+]
+
+{ #category : #initialization }
 MiCallGraphBuilder >> pathFromRootTo: shape [
 
-"ifTrue:ifFalse: to be used if the model returns the edges. Cf model >>#path:fromRootTo: "
+	| entitiesInPath |
 
-	^ (graphModel pathFromRootTo: shape model rawModel) collect: [
-		  :entity |
-		  entity isMethod
-			  ifTrue: [
-			  self container shapeFromModel:
-				  (nodesDictionary at: entity mooseID) ]
-			  "ifFalse: [ self container lines shapeFromModel: entity ] "]
+	entitiesInPath := graphModel pathFromRootTo: shape model rawModel.
+
+	^ (entitiesInPath collect: [ :entity |
+		   entity isMethod
+			   ifTrue: [
+				   self container shapeFromModel:
+					   (self nodesDictionaryAt: entity mooseID) ]
+			   ifFalse: [ self lineRepresenting: entity inPath: entitiesInPath ] ])
+		  flattened
 ]
 
 { #category : #layout }
 MiCallGraphBuilder >> relayout: aGroupOfShapes parent: shape [
 
-	RSRadialTreeLayout on: aGroupOfShapes
-]
-
-{ #category : #'accessing - attributes' }
-MiCallGraphBuilder >> shapeToHighlightIn: shape [
-
-	^ shape isComposite
-		  ifTrue: [ shape children detect: #isNode ]
-		  ifFalse: [ shape ]
+	RSTreeLayout on: aGroupOfShapes
 ]
