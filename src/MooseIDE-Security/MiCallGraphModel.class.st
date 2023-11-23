@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'rootMethod',
 		'graphNodes',
-		'graphEdges'
+		'graphEdges',
+		'settings'
 	],
 	#category : #'MooseIDE-Security'
 }
@@ -16,7 +17,7 @@ MiCallGraphModel >> addGraphEdgesFrom: aMethod [
 
 	aMethod outgoingInvocations do: [ :invocation |
 		invocation candidates do: [ :candidate |
-			candidate isStub ifFalse: [
+			(self shouldAddToGraph: candidate) ifTrue: [
 				graphEdges at: aMethod at: candidate put: invocation ] ] ]
 ]
 
@@ -36,7 +37,8 @@ MiCallGraphModel >> buildGraphFrom: aMethod [
 
 	(aMethod outgoingInvocations flatCollectAsSet: #candidates) do: [
 		:method |
-		(method isStub or: [ graphNodes includes: method ]) ifFalse: [
+		((self shouldAddToGraph: method) and: [
+			 (graphNodes includes: method) not ]) ifTrue: [
 			self buildGraphFrom: method ] ]
 ]
 
@@ -56,6 +58,18 @@ MiCallGraphModel >> graphEdges [
 MiCallGraphModel >> graphNodes [
 
 	^ graphNodes
+]
+
+{ #category : #initialization }
+MiCallGraphModel >> initializeSettings [
+
+	settings := MiCallGraphSettingsPresenter owner: self
+]
+
+{ #category : #actions }
+MiCallGraphModel >> openSettings [
+
+	settings open
 ]
 
 { #category : #'as yet unclassified' }
@@ -91,4 +105,17 @@ MiCallGraphModel >> rootMethod [
 MiCallGraphModel >> rootMethod: anObject [
 
 	rootMethod := anObject
+]
+
+{ #category : #accessing }
+MiCallGraphModel >> settingsChanged: aBoolean [
+
+	aBoolean ifFalse: [ ^ self ].
+	browser update
+]
+
+{ #category : #'as yet unclassified' }
+MiCallGraphModel >> shouldAddToGraph: method [
+
+	^ (settings getItemValue: #includeStubs) or: [ method isStub not ]
 ]

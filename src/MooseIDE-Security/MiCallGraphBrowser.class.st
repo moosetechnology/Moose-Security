@@ -59,12 +59,25 @@ MiCallGraphBrowser >> canFollowEntity: anObject [
 MiCallGraphBrowser >> followEntity: anEntity [
 
 	specModel rootMethod: anEntity.
-	specModel buildGraph.
-	mainPresenter run
+
+	self update
+]
+
+{ #category : #testing }
+MiCallGraphBrowser >> hasSettings [
+
+	^ true
 ]
 
 { #category : #initialization }
 MiCallGraphBrowser >> initializePresenters [
 
 	mainPresenter := self instantiate: self class mapClass
+]
+
+{ #category : #actions }
+MiCallGraphBrowser >> update [
+
+	specModel buildGraph.
+	mainPresenter run
 ]
