@@ -10,7 +10,7 @@ Class {
 	#category : #'MooseIDE-Security'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #graph }
 MiCallGraphModel >> addGraphEdgesFrom: aMethod [
 
 	"May be too large when a lot of invocations. Use signature?"
@@ -21,7 +21,7 @@ MiCallGraphModel >> addGraphEdgesFrom: aMethod [
 				graphEdges at: aMethod at: candidate put: invocation ] ] ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #graph }
 MiCallGraphModel >> buildGraph [
 
 	graphNodes := Set new.
@@ -29,7 +29,7 @@ MiCallGraphModel >> buildGraph [
 	self buildGraphFrom: rootMethod
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #graph }
 MiCallGraphModel >> buildGraphFrom: aMethod [
 
 	graphNodes add: aMethod.
@@ -72,7 +72,7 @@ MiCallGraphModel >> openSettings [
 	settings open
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #graph }
 MiCallGraphModel >> path: aSet fromRootTo: anEntity [
 
 	| senders |
@@ -89,16 +89,10 @@ MiCallGraphModel >> path: aSet fromRootTo: anEntity [
 	^ aSet
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #graph }
 MiCallGraphModel >> pathFromRootTo: anEntity [
 
 	^ self path: OrderedCollection new fromRootTo: anEntity
-]
-
-{ #category : #accessing }
-MiCallGraphModel >> rootMethod [
-
-	^ rootMethod
 ]
 
 { #category : #accessing }
@@ -111,10 +105,10 @@ MiCallGraphModel >> rootMethod: anObject [
 MiCallGraphModel >> settingsChanged: aBoolean [
 
 	aBoolean ifFalse: [ ^ self ].
-	browser update
+	browser updateGraph
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #graph }
 MiCallGraphModel >> shouldAddToGraph: method [
 
 	^ (settings getItemValue: #includeStubs) or: [ method isStub not ]

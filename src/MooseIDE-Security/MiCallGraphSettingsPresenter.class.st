@@ -1,11 +1,6 @@
 Class {
 	#name : #MiCallGraphSettingsPresenter,
 	#superclass : #MiSettingsPresenter,
-	#instVars : [
-		'rootMethod',
-		'graphNodes',
-		'graphEdges'
-	],
 	#category : #'MooseIDE-Security'
 }
 

@@ -87,12 +87,6 @@ MiCallGraphBuilder >> linkForInvocation: invocation candidate: candidate [
 	^ linksDictionary at: nodeForSender -> nodeForCandidate put: hLink
 ]
 
-{ #category : #accessing }
-MiCallGraphBuilder >> linksDictionaryAt: anAssociation [
-
-	^ linksDictionary at: anAssociation
-]
-
 { #category : #'accessing - attributes' }
 MiCallGraphBuilder >> menuItemStrategy [
 

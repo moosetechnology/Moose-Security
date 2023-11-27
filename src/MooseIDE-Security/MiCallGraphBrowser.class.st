@@ -75,8 +75,8 @@ MiCallGraphBrowser >> initializePresenters [
 	mainPresenter := self instantiate: self class mapClass
 ]
 
-{ #category : #actions }
-MiCallGraphBrowser >> update [
+{ #category : #TOREMOVE }
+MiCallGraphBrowser >> updateGraph [
 
 	specModel buildGraph.
 	mainPresenter run
