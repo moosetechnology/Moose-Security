@@ -60,7 +60,7 @@ MiCallGraphBrowser >> followEntity: anEntity [
 
 	specModel rootMethod: anEntity.
 
-	self update
+	self updateGraph
 ]
 
 { #category : #testing }
