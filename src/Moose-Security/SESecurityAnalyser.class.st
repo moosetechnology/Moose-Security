@@ -37,30 +37,62 @@ SESecurityAnalyser >> model: anObject [
 ]
 
 { #category : #query }
-SESecurityAnalyser >> nonTestClasses [ 
+SESecurityAnalyser >> nonTestClasses [
+
 	^ self classes reject: #isTestCase
 ]
 
 { #category : #query }
+SESecurityAnalyser >> queryClassesImplementingClassName: aString [
+
+	^ self nonTestClasses select: [ :c |
+		  c directImplementedInterfaces anySatisfy: [ :i | i name = aString  ] ]
+]
+
+{ #category : #query }
+SESecurityAnalyser >> queryClassesImplementingClassName: aString tagWith: aTag [
+
+	classes := self queryClassesImplementingClassName: aString.
+	self tagElements: classes with: aTag
+]
+
+{ #category : #query }
+SESecurityAnalyser >> queryClassesImplementingClassName: aString tagWithName: aTagName [
+
+	| tag |
+	tag := self model allTags
+		       detect: [ :t | t name = aTagName ]
+		       ifNone: [ self model createTagNamed: aTagName ].
+	^ self queryClassesImplementingClassName: aString tagWith: tag
+]
+
+{ #category : #query }
 SESecurityAnalyser >> queryClassesWithIncludedName: aString [
-	^ self nonTestClasses select: [ :c | c name includesSubstring: aString ]
+
+	^ self nonTestClasses select: [ :c |
+		  c name includesSubstring: aString ]
 ]
 
 { #category : #query }
 SESecurityAnalyser >> queryClassesWithIncludedName: aString tagWith: aTag [
+
 	classes := self queryClassesWithIncludedName: aString.
 	self tagElements: classes with: aTag
 ]
 
 { #category : #query }
 SESecurityAnalyser >> queryClassesWithIncludedName: aString tagWithName: aTagName [
+
 	| tag |
-	tag := self model allTags detect: [ :t | t name = aTagName ] ifNone: [ self model createTagNamed: aTagName  ].
-	^ self queryClassesWithIncludedName: aString tagWith: tag.
+	tag := self model allTags
+		       detect: [ :t | t name = aTagName ]
+		       ifNone: [ self model createTagNamed: aTagName ].
+	^ self queryClassesWithIncludedName: aString tagWith: tag
 ]
 
 { #category : #tag }
 SESecurityAnalyser >> tagElements: aCollection with: aTag [
+
 	aCollection do: [ :e | e tagWith: aTag ]
 ]
 
