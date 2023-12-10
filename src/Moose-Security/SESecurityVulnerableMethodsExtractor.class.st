@@ -31,3 +31,12 @@ SESecurityVulnerableMethodsExtractor >> methods: anObject [
 
 	methods := anObject
 ]
+
+{ #category : #query }
+SESecurityVulnerableMethodsExtractor >> vulnerableMethodSelector [
+	"this method is intended for looking for methods with given names in the classes of Commons-Collections 3.1"
+
+	^ self methods select: [ :m |
+		  #( 'getValue' 'hashCode' 'equals' 'get' 'transform' ) includes:
+			  m name ]
+]
