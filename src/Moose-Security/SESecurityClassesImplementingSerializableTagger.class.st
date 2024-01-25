@@ -1,17 +1,17 @@
 Class {
-	#name : #SESecurityClassesImplementingSerializable,
-	#superclass : #SEAbstractVulnerabilityTagger,
+	#name : #SESecurityClassesImplementingSerializableTagger,
+	#superclass : #SEVulnerabilityTagger,
 	#category : #'Moose-Security'
 }
 
 { #category : #accessing }
-SESecurityClassesImplementingSerializable class >> tagName [
+SESecurityClassesImplementingSerializableTagger class >> tagName [
 
 	^ #SerializableClass
 ]
 
 { #category : #accessing }
-SESecurityClassesImplementingSerializable >> queryEntitiesToTag [
+SESecurityClassesImplementingSerializableTagger >> queryEntitiesToTag [
 
 	^ self nonTestClasses select: [ :class |
 		  class directImplementedInterfaces anySatisfy: [ :interface |

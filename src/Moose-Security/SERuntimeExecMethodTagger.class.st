@@ -1,11 +1,12 @@
 Class {
 	#name : #SERuntimeExecMethodTagger,
-	#superclass : #SEAbstractVulnerabilityTagger,
+	#superclass : #SEVulnerabilityTagger,
 	#category : #'Moose-Security'
 }
 
 { #category : #accessing }
 SERuntimeExecMethodTagger class >> tagName [
+
 	^ 'RuntimeExec'
 ]
 

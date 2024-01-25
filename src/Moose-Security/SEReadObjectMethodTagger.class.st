@@ -1,6 +1,6 @@
 Class {
 	#name : #SEReadObjectMethodTagger,
-	#superclass : #SEAbstractVulnerabilityTagger,
+	#superclass : #SEVulnerabilityTagger,
 	#category : #'Moose-Security'
 }
 
