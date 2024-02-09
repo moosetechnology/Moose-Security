@@ -34,6 +34,38 @@ SESerialisationTagger class >> mapClassTagger [
 ]
 
 { #category : #'default taggers' }
+SESerialisationTagger class >> newBufferedReaderTagger [
+"method in the class Files"
+
+	<cautionTagger>
+	^ self
+		  tagResultOf: [ :model :tagger |
+		  tagger methodsNamed: #newBufferedReader in: model ]
+		  with: #newBufferedReaderMethod
+]
+
+{ #category : #'default taggers' }
+SESerialisationTagger class >> newBufferedWriterTagger [
+
+	<cautionTagger>
+	^ self
+		  tagResultOf: [ :model :tagger |
+		  tagger methodsNamed: #newBufferedWriter in: model ]
+		  with: #newBufferedWriterMethod
+]
+
+{ #category : #'default taggers' }
+SESerialisationTagger class >> newOutputStreamTagger [
+"This method is located in the Files class.
+"
+	<cautionTagger>
+	^ self
+		  tagResultOf: [ :model :tagger |
+		  tagger methodsNamed: #newOutputStream in: model ]
+		  with: #newOutputStreamMethod
+]
+
+{ #category : #'default taggers' }
 SESerialisationTagger class >> newTransformerTagger [
 
 	<cautionTagger>
@@ -41,6 +73,26 @@ SESerialisationTagger class >> newTransformerTagger [
 		  tagResultOf: [ :model :tagger |
 		  tagger methodsNamed: #newTransformer in: model ]
 		  with: '#[Serialization]newTransformerMethod'
+]
+
+{ #category : #'default taggers' }
+SESerialisationTagger class >> readAllBytesTagger [
+
+	<cautionTagger>
+	^ self
+		  tagResultOf: [ :model :tagger |
+		  tagger methodsNamed: #readAllBytes in: model ]
+		  with: #readAllBytesMethod
+]
+
+{ #category : #'default taggers' }
+SESerialisationTagger class >> readLineTagger [
+
+	<cautionTagger>
+	^ self
+		  tagResultOf: [ :model :tagger |
+		  tagger methodsNamed: #readLine in: model ]
+		  with: #readLineMethod
 ]
 
 { #category : #'default taggers' }
