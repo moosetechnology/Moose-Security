@@ -5,6 +5,16 @@ Class {
 }
 
 { #category : #'default taggers' }
+SESerialisationTagger class >> execTagger [
+
+	<cautionTagger>
+	^ self
+		  tagResultOf: [ :model :tagger |
+		  tagger methodsNamed: #exec in: model ]
+		  with: #execMethod
+]
+
+{ #category : #'default taggers' }
 SESerialisationTagger class >> getOutputPropertiesTagger [
 
 	<cautionTagger>
@@ -31,27 +41,6 @@ SESerialisationTagger class >> mapClassTagger [
 	^ self
 		  tagResultOf: [ :model :tagger | tagger classesImplementing: #Map in: model ]
 		  with: #MapClass
-]
-
-{ #category : #'default taggers' }
-SESerialisationTagger class >> newBufferedReaderTagger [
-"method in the class Files"
-
-	<cautionTagger>
-	^ self
-		  tagResultOf: [ :model :tagger |
-		  tagger methodsNamed: #newBufferedReader in: model ]
-		  with: #newBufferedReaderMethod
-]
-
-{ #category : #'default taggers' }
-SESerialisationTagger class >> newBufferedWriterTagger [
-
-	<cautionTagger>
-	^ self
-		  tagResultOf: [ :model :tagger |
-		  tagger methodsNamed: #newBufferedWriter in: model ]
-		  with: #newBufferedWriterMethod
 ]
 
 { #category : #'default taggers' }

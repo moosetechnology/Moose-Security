@@ -16,6 +16,17 @@ SESocketTagger class >> connectTagger [
 ]
 
 { #category : #'default taggers' }
+SESocketTagger class >> openTagger [
+"This method is located in the SocketChannel class.
+"
+	<cautionTagger>
+	^ self
+		  tagResultOf: [ :model :tagger |
+		  tagger methodsNamed: #open in: model ]
+		  with: #openMethod
+]
+
+{ #category : #'default taggers' }
 SESocketTagger class >> shutdownInputTagger [
 "This method is located in the SocketChannel class.
 "
