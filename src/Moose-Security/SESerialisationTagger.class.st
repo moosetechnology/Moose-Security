@@ -8,116 +8,89 @@ Class {
 SESerialisationTagger class >> execTagger [
 
 	<cautionTagger>
-	^ self
-		  tagResultOf: [ :model :tagger |
-		  tagger methodsNamed: #exec in: model ]
-		  with: #execMethod
+	^ self tagResultOf: [ :model :tagger | tagger methodsNamed: #exec in: model ]
 ]
 
 { #category : #'default taggers' }
 SESerialisationTagger class >> getOutputPropertiesTagger [
 
 	<cautionTagger>
-	^ self
-		  tagResultOf: [ :model :tagger |
-			  tagger methodsNamed: #getOutputProperties in: model ]
-		  with: #getOutputPropertiesMethod
+	^ self tagResultOf: [ :model :tagger | tagger methodsNamed: #getOutputProperties in: model ]
 ]
 
 { #category : #'default taggers' }
 SESerialisationTagger class >> getTransletInstanceTagger [
 
 	<cautionTagger>
-	^ self
-		  tagResultOf: [ :model :tagger |
-			  tagger methodsNamed: #getTransletInstance in: model ]
-		  with: #getTransletInstanceMethod
+	^ self tagResultOf: [ :model :tagger | tagger methodsNamed: #getTransletInstance in: model ]
 ]
 
 { #category : #'default taggers' }
 SESerialisationTagger class >> mapClassTagger [
 
 	<cautionTagger>
-	^ self
-		  tagResultOf: [ :model :tagger | tagger classesImplementing: #Map in: model ]
-		  with: #MapClass
+	^ self tagResultOf: [ :model :tagger | tagger classesImplementing: #Map in: model ]
 ]
 
 { #category : #'default taggers' }
 SESerialisationTagger class >> newOutputStreamTagger [
-"This method is located in the Files class.
-"
+	"This method is located in the Files class."
+
 	<cautionTagger>
-	^ self
-		  tagResultOf: [ :model :tagger |
-		  tagger methodsNamed: #newOutputStream in: model ]
-		  with: #newOutputStreamMethod
+	^ self tagResultOf: [ :model :tagger | tagger methodsNamed: #newOutputStream in: model ]
 ]
 
 { #category : #'default taggers' }
 SESerialisationTagger class >> newTransformerTagger [
 
 	<cautionTagger>
-	^ self
-		  tagResultOf: [ :model :tagger |
-		  tagger methodsNamed: #newTransformer in: model ]
-		  with: '#[Serialization]newTransformerMethod'
+	^ self tagResultOf: [ :model :tagger | tagger methodsNamed: #newTransformer in: model ]
 ]
 
 { #category : #'default taggers' }
 SESerialisationTagger class >> readAllBytesTagger [
 
 	<cautionTagger>
-	^ self
-		  tagResultOf: [ :model :tagger |
-		  tagger methodsNamed: #readAllBytes in: model ]
-		  with: #readAllBytesMethod
+	^ self tagResultOf: [ :model :tagger | tagger methodsNamed: #readAllBytes in: model ]
 ]
 
 { #category : #'default taggers' }
 SESerialisationTagger class >> readLineTagger [
 
 	<cautionTagger>
-	^ self
-		  tagResultOf: [ :model :tagger |
-		  tagger methodsNamed: #readLine in: model ]
-		  with: #readLineMethod
+	^ self tagResultOf: [ :model :tagger | tagger methodsNamed: #readLine in: model ]
 ]
 
 { #category : #'default taggers' }
 SESerialisationTagger class >> readObjectTagger [
 
 	<cautionTagger>
-	^ self
-		  tagResultOf: [ :model :tagger |
-		  tagger methodsNamed: #readObject in: model ]
-		  with: #readObjectMethod
+	^ self tagResultOf: [ :model :tagger | tagger methodsNamed: #readObject in: model ]
 ]
 
 { #category : #'default taggers' }
 SESerialisationTagger class >> serializableClassTagger [
 
 	<cautionTagger>
-	^ self
-		  tagResultOf: [ :model :tagger | tagger classesImplementing: #Serializable in: model ]
-		  with: #SerializableClass
+	^ self tagResultOf: [ :model :tagger | tagger classesImplementing: #Serializable in: model ]
+]
+
+{ #category : #accessing }
+SESerialisationTagger class >> tagName [
+
+	^ #Serialisation
 ]
 
 { #category : #'default taggers' }
 SESerialisationTagger class >> transformTagger [
 
 	<cautionTagger>
-	^ self
-		  tagResultOf: [ :model :tagger |
-		  tagger methodsNamed: #transform in: model ]
-		  with: #transformMethod
+	^ self tagResultOf: [ :model :tagger | tagger methodsNamed: #transform in: model ]
 ]
 
 { #category : #'default taggers' }
 SESerialisationTagger class >> transformerClassTagger [
 
 	<cautionTagger>
-	^ self
-		  tagResultOf: [ :model :tagger | tagger classesImplementing: #Transformer in: model ]
-		  with: #TransformerClass
+	^ self tagResultOf: [ :model :tagger | tagger classesImplementing: #Transformer in: model ]
 ]
