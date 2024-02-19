@@ -14,7 +14,7 @@ Class {
 SHProjectExplorerByNameOptionPresenter >> connectPresenters [
 
 	searchButton action: [ self updateListWithSearchPattern ].
-	importButton action: [ 1 halt ]
+	importButton action: [ list selection selectedItem halt]
 ]
 
 { #category : #layout }
@@ -64,9 +64,5 @@ SHProjectExplorerByNameOptionPresenter >> titleForWindow [
 { #category : #initialization }
 SHProjectExplorerByNameOptionPresenter >> updateListWithSearchPattern [
 
-	| projects |
-	projects := (STONJSON fromString: (ZnClient new get: 'https://archive.softwareheritage.org/api/1/origin/search/' , textField text , '/?with_visit=true'))
-		            collect: [ :dictionary | SHProject fromDictionary: dictionary ].
-
-	^ list items: projects
+	^ list items: (SHProject projectsFromSearchPattern: textField text)
 ]

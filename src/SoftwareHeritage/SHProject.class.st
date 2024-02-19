@@ -1,24 +1,34 @@
 Class {
 	#name : #SHProject,
-	#superclass : #Object,
+	#superclass : #SHObject,
 	#instVars : [
-		'data'
+		'latestVisit',
+		'latestSnapshot'
 	],
 	#category : #SoftwareHeritage
 }
 
 { #category : #'instance creation' }
-SHProject class >> fromDictionary: aDictionary [
+SHProject class >> projectsFromSearchPattern: aString [
 
-	^ self new
-		  data: aDictionary;
-		  yourself
+	^ (STONJSON fromString: (ZnClient new get: 'https://archive.softwareheritage.org/api/1/origin/search/' , aString , '/?with_visit=true&limit=1000')) collect: [
+		  :dictionary | self fromDictionary: dictionary ]
 ]
 
 { #category : #accessing }
-SHProject >> data: aDictionary [
+SHProject >> latestSnapshot [
 
-	data := aDictionary
+	^ latestSnapshot ifNil: [
+		  latestSnapshot := SHProjectSnapshot fromDictionary:
+			                    (STONJSON fromString: (ZnClient new get: 'https://archive.softwareheritage.org/api/1/snapshot/' , self latestVisit snapshotID)) ]
+]
+
+{ #category : #accessing }
+SHProject >> latestVisit [
+
+	^ latestVisit ifNil: [
+		  latestVisit := SHProjectVisit fromDictionary:
+			                 (STONJSON fromString: (ZnClient new get: 'https://archive.softwareheritage.org/api/1/origin/' , self url , '/visit/latest/')) ]
 ]
 
 { #category : #accessing }
