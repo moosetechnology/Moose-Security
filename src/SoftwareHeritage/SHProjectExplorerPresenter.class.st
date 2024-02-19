@@ -48,7 +48,7 @@ SHProjectExplorerPresenter >> initializeWindow: aSpWindowPresenter [
 
 	super initializeWindow: aSpWindowPresenter.
 
-	aSpWindowPresenter initialExtent: (700 @ 300) scaledByDisplayScaleFactor.
+	aSpWindowPresenter initialExtent: (900 @ 500) scaledByDisplayScaleFactor.
 	aSpWindowPresenter whenOpenedDo: [ typeList selectIndex: 1 ]
 ]
 

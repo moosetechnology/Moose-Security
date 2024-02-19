@@ -32,6 +32,12 @@ SHProject >> latestVisit [
 ]
 
 { #category : #accessing }
+SHProject >> targets [
+
+	^ self latestSnapshot branches
+]
+
+{ #category : #accessing }
 SHProject >> url [
 
 	^ data at: #url

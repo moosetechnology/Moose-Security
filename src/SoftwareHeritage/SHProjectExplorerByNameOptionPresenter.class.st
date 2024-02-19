@@ -4,8 +4,9 @@ Class {
 	#instVars : [
 		'textField',
 		'searchButton',
-		'list',
-		'importButton'
+		'importButton',
+		'targetsTable',
+		'projectsList'
 	],
 	#category : #SoftwareHeritage
 }
@@ -14,7 +15,10 @@ Class {
 SHProjectExplorerByNameOptionPresenter >> connectPresenters [
 
 	searchButton action: [ self updateListWithSearchPattern ].
-	importButton action: [ list selection selectedItem halt]
+
+	projectsList transmitTo: targetsTable transform: [ :project | project ifNotNil: [ project targets ] ].
+
+	importButton action: [ projectsList selection selectedItem halt ]
 ]
 
 { #category : #layout }
@@ -25,7 +29,8 @@ SHProjectExplorerByNameOptionPresenter >> defaultLayout [
 				   add: textField;
 				   add: searchButton expand: false)
 		  expand: false;
-		  add: list;
+		  add: projectsList;
+		  add: targetsTable;
 		  add: importButton expand: false;
 		  yourself
 ]
@@ -45,9 +50,14 @@ SHProjectExplorerByNameOptionPresenter >> initializePresenters [
 		                disable;
 		                yourself.
 
-	list := self newList
-		        display: [ :project | project url ];
-		        whenSelectionChangedDo: [ :selection | importButton enabled: selection isEmpty not ].
+	projectsList := self newList
+		                display: [ :project | project url ];
+		                whenSelectionChangedDo: [ :selection | importButton enabled: selection isEmpty not ].
+
+	targetsTable := self newTable
+		                addColumn: (SpStringTableColumn title: 'Kind' evaluated: #kind);
+		                addColumn: (SpStringTableColumn title: 'Name' evaluated: #name);
+		                yourself.
 
 	importButton := self newButton
 		                label: 'Import';
@@ -64,5 +74,5 @@ SHProjectExplorerByNameOptionPresenter >> titleForWindow [
 { #category : #initialization }
 SHProjectExplorerByNameOptionPresenter >> updateListWithSearchPattern [
 
-	^ list items: (SHProject projectsFromSearchPattern: textField text)
+	^ projectsList items: (SHProject projectsFromSearchPattern: textField text)
 ]
