@@ -19,5 +19,13 @@ SHProjectRevision >> download [
 	'test.tar.gz' asFileReference
 		ensureDelete;
 		ensureCreateFile;
-		binaryWriteStreamDo: [ :s | s nextPutAll: (ZnClient new get: (requestResult at: #fetch_url)) ]
+		binaryWriteStreamDo: [ :s | s nextPutAll: (ZnClient new get: (requestResult at: #fetch_url)) ].
+
+	'test' asFileReference
+		ensureDeleteAll;
+		ensureCreateDirectory.
+
+	LibC runCommand: 'tar -xzvf test.tar.gz -C test --strip-components=1'.
+
+	'test.tar.gz' asFileReference ensureDelete
 ]

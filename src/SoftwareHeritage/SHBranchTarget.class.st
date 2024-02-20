@@ -24,7 +24,7 @@ SHBranchTarget class >> priority [
 	^ 4
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 SHBranchTarget >> download [
 
 	self revision download
