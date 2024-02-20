@@ -5,7 +5,7 @@ Class {
 }
 
 { #category : #action }
-SHProjectRevision >> download [
+SHProjectRevision >> downloadInFolderNamed: aString [
 
 	| requestResult |
 	requestResult := STONJSON fromString: (ZnClient new
@@ -16,16 +16,16 @@ SHProjectRevision >> download [
 		5 seconds wait.
 		requestResult := STONJSON fromString: (ZnClient new get: 'https://archive.softwareheritage.org/api/1/vault/directory/' , (data at: #directory) , '/') ].
 
-	'test.tar.gz' asFileReference
+	'temporary_archive_from_software_heritage.tar.gz' asFileReference
 		ensureDelete;
 		ensureCreateFile;
 		binaryWriteStreamDo: [ :s | s nextPutAll: (ZnClient new get: (requestResult at: #fetch_url)) ].
 
-	'test' asFileReference
+	aString asFileReference
 		ensureDeleteAll;
 		ensureCreateDirectory.
 
-	LibC runCommand: 'tar -xzvf test.tar.gz -C test --strip-components=1'.
+	LibC runCommand: 'tar -xzvf temporary_archive_from_software_heritage.tar.gz -C "' , aString , '" --strip-components=1'.
 
 	'test.tar.gz' asFileReference ensureDelete
 ]

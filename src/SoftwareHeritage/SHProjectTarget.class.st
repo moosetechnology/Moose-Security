@@ -46,6 +46,24 @@ SHProjectTarget class >> priority [
 	^ self subclassResponsibility
 ]
 
+{ #category : #action }
+SHProjectTarget >> download [
+
+	^ self downloadInFolderNamed: self downloadFolderName
+]
+
+{ #category : #accessing }
+SHProjectTarget >> downloadFolderName [
+
+	^ FileSystem disk checkName: self kind , '_' , self name fixErrors: true
+]
+
+{ #category : #action }
+SHProjectTarget >> downloadInFolderNamed: aName [
+
+	self subclassResponsibility
+]
+
 { #category : #accessing }
 SHProjectTarget >> iconName [
 

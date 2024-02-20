@@ -25,9 +25,9 @@ SHBranchTarget class >> priority [
 ]
 
 { #category : #action }
-SHBranchTarget >> download [
+SHBranchTarget >> downloadInFolderNamed: aString [
 
-	self revision download
+	self revision downloadInFolderNamed: aString
 ]
 
 { #category : #accessing }
