@@ -24,6 +24,12 @@ SHReleaseTarget class >> priority [
 	^ 2
 ]
 
+{ #category : #action }
+SHReleaseTarget >> downloadInFolderNamed: aString [
+
+	self error: 'Not supported yet'
+]
+
 { #category : #accessing }
 SHReleaseTarget >> iconName [
 

@@ -24,6 +24,12 @@ SHPullRequestTarget class >> priority [
 	^ 10
 ]
 
+{ #category : #action }
+SHPullRequestTarget >> downloadInFolderNamed: aString [
+
+	self revision downloadInFolderNamed: aString
+]
+
 { #category : #accessing }
 SHPullRequestTarget >> iconName [
 

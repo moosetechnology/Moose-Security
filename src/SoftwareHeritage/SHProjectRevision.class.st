@@ -13,7 +13,6 @@ SHProjectRevision >> downloadInFolderNamed: aString [
 	| requestResult archiveName |
 	job title: 'Requesting download ' , aString.
 
-
 	requestResult := STONJSON fromString: (ZnClient new
 			                  url: 'https://archive.softwareheritage.org/api/1/vault/directory/' , (data at: #directory) , '/';
 			                  post).
@@ -42,4 +41,11 @@ SHProjectRevision >> downloadInFolderNamed: aString [
 	LibC runCommand: 'tar -xzvf ' , archiveName , ' -C "' , aString , '" --strip-components=1'.
 
 	archiveName asFileReference ensureDelete ] asJob run ] asJob run
+]
+
+{ #category : #accessing }
+SHProjectRevision >> revision [
+	"I don't know why but in some cases to have all the info we need to ask the revision of the revision. This model is weird."
+
+	^ self class fromDictionary: (STONJSON fromString: (ZnClient new get: (data at: #target_url)))
 ]
