@@ -18,5 +18,19 @@ SHScript >> script [
 
 	latest := STONJSON fromString: (ZnClient new get: 'https://archive.softwareheritage.org/api/1/origin/' , origin , '/visit/latest/').
 
-	STONJSON fromString: (ZnClient new get: 'https://archive.softwareheritage.org/api/1/snapshot/' , (latest at: #snapshot))
+	STONJSON fromString: (ZnClient new get: 'https://archive.softwareheritage.org/api/1/snapshot/' , (latest at: #snapshot)).
+
+	"self is a revision."
+	STONJSON fromString: (ZnClient new
+			 url: 'https://archive.softwareheritage.org/api/1/vault/directory/' , (self at: #directory) , '/';
+			 post).
+
+	STONJSON fromString: (ZnClient new get: 'https://archive.softwareheritage.org/api/1/vault/directory/' , (self at: #directory) , '/').
+
+	'test.tar.gz' asFileReference
+		ensureDelete;
+		ensureCreateFile;
+		binaryWriteStreamDo: [ :s |
+			s nextPutAll: (ZnClient new get:
+							 ((STONJSON fromString: (ZnClient new get: 'https://archive.softwareheritage.org/api/1/vault/directory/' , (self at: #directory) , '/')) at: #fetch_url)) ]
 ]

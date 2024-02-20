@@ -72,3 +72,9 @@ SHProjectTarget >> priority [
 
 	^ self class priority
 ]
+
+{ #category : #accessing }
+SHProjectTarget >> revision [
+
+	^ SHProjectRevision fromDictionary: (STONJSON fromString: (ZnClient new get: (data at: #target_url)))
+]
