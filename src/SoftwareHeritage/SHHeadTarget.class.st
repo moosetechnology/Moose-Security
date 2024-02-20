@@ -32,6 +32,12 @@ SHHeadTarget >> data: aDictionary [
 	self name: ((aDictionary at: #target) withoutPrefix: 'refs/heads/')
 ]
 
+{ #category : #action }
+SHHeadTarget >> downloadInFolderNamed: aString [
+
+	self revision downloadInFolderNamed: aString
+]
+
 { #category : #accessing }
 SHHeadTarget >> iconName [
 
