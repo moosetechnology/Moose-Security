@@ -2,7 +2,6 @@ Class {
 	#name : #SHProjectTarget,
 	#superclass : #SHObject,
 	#instVars : [
-		'kind',
 		'name'
 	],
 	#category : #SoftwareHeritage
