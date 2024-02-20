@@ -62,8 +62,7 @@ SHProjectExplorerByNameOptionPresenter >> initializePresenters [
 		                 addColumn: ((SpStringTableColumn title: 'Kind' evaluated: #kind)
 				                  width: 60;
 				                  yourself);
-		                 addColumn: (SpStringTableColumn title: 'Origin' evaluated: #url);
-		                 whenSelectionChangedDo: [ :selection | importButton enabled: selection isEmpty not ].
+		                 addColumn: (SpStringTableColumn title: 'Origin' evaluated: #url).
 
 	targetsTable := self newTable
 		                addColumn: (SpImageTableColumn new
@@ -75,6 +74,7 @@ SHProjectExplorerByNameOptionPresenter >> initializePresenters [
 				                 width: 80;
 				                 yourself);
 		                addColumn: (SpStringTableColumn title: 'Name' evaluated: #name);
+		                whenSelectionChangedDo: [ :selection | importButton enabled: selection isEmpty not ];
 		                yourself.
 
 	importButton := self newButton
