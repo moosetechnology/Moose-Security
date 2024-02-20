@@ -24,6 +24,12 @@ SHBranchTarget class >> priority [
 	^ 4
 ]
 
+{ #category : #'as yet unclassified' }
+SHBranchTarget >> download [
+
+	self revision download
+]
+
 { #category : #accessing }
 SHBranchTarget >> iconName [
 

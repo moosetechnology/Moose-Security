@@ -24,7 +24,7 @@ SHProjectExplorerByNameOptionPresenter >> connectPresenters [
 				ifNotNil: [ project targets ] ]
 		postTransmission: [ :destination | destination selectFirst ].
 
-	importButton action: [ projectsTable selection selectedItem halt ]
+	importButton action: [ targetsTable selection selectedItem download ]
 ]
 
 { #category : #layout }
