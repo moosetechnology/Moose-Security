@@ -8,14 +8,54 @@ Class {
 	#category : #SoftwareHeritage
 }
 
-{ #category : #accessing }
-SHProjectTarget >> kind [
-	^ kind
+{ #category : #'instance creation' }
+SHProjectTarget class >> allTargetsFrom: aDictionary [
+	"I don't really know what are the remotes references so for now I'm excluding them..."
+
+	^ (aDictionary associations
+		   select: [ :asso | (asso key beginsWith: 'refs/remotes/') not ]
+		   thenCollect: [ :asso |
+			   (self from: asso key)
+				   data: asso value;
+				   yourself ]) sort: #priority ascending , #name ascending
+]
+
+{ #category : #'instance creation' }
+SHProjectTarget class >> from: aReference [
+
+	^ self allSubclasses
+		  detect: [ :class | class isValidFor: aReference ]
+		  ifFound: [ :class | class newWith: aReference ]
+		  ifNone: [ self error: 'Reference kind not supported yet.' ]
+]
+
+{ #category : #testing }
+SHProjectTarget class >> isValidFor: aReference [
+
+	^ self subclassResponsibility
+]
+
+{ #category : #testing }
+SHProjectTarget class >> newWith: aReference [
+
+	^ self subclassResponsibility
 ]
 
 { #category : #accessing }
-SHProjectTarget >> kind: anObject [
-	kind := anObject
+SHProjectTarget class >> priority [
+
+	^ self subclassResponsibility
+]
+
+{ #category : #accessing }
+SHProjectTarget >> iconName [
+
+	^ self subclassResponsibility
+]
+
+{ #category : #accessing }
+SHProjectTarget >> kind [
+	^ self subclassResponsibility
 ]
 
 { #category : #accessing }
@@ -29,30 +69,7 @@ SHProjectTarget >> name: anObject [
 ]
 
 { #category : #accessing }
-SHProjectTarget >> reference: aString [
-	"Some info are present only in the reference of a branch so we parse it to extract the maximum ammount of info. This will be a little ugly and maybe I can iterate on it later."
+SHProjectTarget >> priority [
 
-	aString = 'HEAD' ifTrue: [
-		self kind: 'HEAD'.
-		self name: 'Default branch'.
-		^ self ].
-
-	(aString beginsWith: 'refs/') ifTrue: [
-		| reference |
-		reference := aString allButFirst: 5.
-
-		(reference beginsWith: 'pull') ifTrue: [
-			self kind: 'Pull request'.
-			self name: ((reference withoutPrefix: 'pull/') withoutSuffix: '/head').
-			^ self ].
-		(reference beginsWith: 'tags') ifTrue: [
-			self kind: 'Tag'.
-			self name: (reference withoutPrefix: 'tags/').
-			^ self ].
-		(reference beginsWith: 'heads') ifTrue: [
-			self kind: 'Branch'.
-			self name: (reference withoutPrefix: 'heads/').
-			^ self ] ].
-
-	self error: 'Reference kind not managed.'
+	^ self class priority
 ]

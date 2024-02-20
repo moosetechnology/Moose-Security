@@ -16,6 +16,12 @@ SHProject class >> projectsFromSearchPattern: aString [
 ]
 
 { #category : #accessing }
+SHProject >> kind [
+
+	^ (data at: #visit_types) anyOne
+]
+
+{ #category : #accessing }
 SHProject >> latestSnapshot [
 
 	^ latestSnapshot ifNil: [

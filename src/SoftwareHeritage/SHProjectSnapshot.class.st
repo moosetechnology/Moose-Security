@@ -10,9 +10,5 @@ Class {
 { #category : #branches }
 SHProjectSnapshot >> branches [
 
-	^ branches ifNil: [
-		  branches := (data at: #branches) associations collect: [ :asso |
-			              (SHProjectTarget fromDictionary: asso value)
-				              reference: asso key;
-				              yourself ] ]
+	^ branches ifNil: [ branches := SHProjectTarget allTargetsFrom: (data at: #branches) ]
 ]

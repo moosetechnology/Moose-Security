@@ -6,7 +6,7 @@ Class {
 		'searchButton',
 		'importButton',
 		'targetsTable',
-		'projectsList'
+		'projectsTable'
 	],
 	#category : #SoftwareHeritage
 }
@@ -16,9 +16,15 @@ SHProjectExplorerByNameOptionPresenter >> connectPresenters [
 
 	searchButton action: [ self updateListWithSearchPattern ].
 
-	projectsList transmitTo: targetsTable transform: [ :project | project ifNotNil: [ project targets ] ].
+	projectsTable
+		transmitTo: targetsTable
+		transform: [ :project |
+			project
+				ifNil: [ #(  ) ]
+				ifNotNil: [ project targets ] ]
+		postTransmission: [ :destination | destination selectFirst ].
 
-	importButton action: [ projectsList selection selectedItem halt ]
+	importButton action: [ projectsTable selection selectedItem halt ]
 ]
 
 { #category : #layout }
@@ -29,7 +35,9 @@ SHProjectExplorerByNameOptionPresenter >> defaultLayout [
 				   add: textField;
 				   add: searchButton expand: false)
 		  expand: false;
-		  add: projectsList;
+		  add: 'Projects' expand: false;
+		  add: projectsTable;
+		  add: 'Targets' expand: false;
 		  add: targetsTable;
 		  add: importButton expand: false;
 		  yourself
@@ -50,12 +58,22 @@ SHProjectExplorerByNameOptionPresenter >> initializePresenters [
 		                disable;
 		                yourself.
 
-	projectsList := self newList
-		                display: [ :project | project url ];
-		                whenSelectionChangedDo: [ :selection | importButton enabled: selection isEmpty not ].
+	projectsTable := self newTable
+		                 addColumn: ((SpStringTableColumn title: 'Kind' evaluated: #kind)
+				                  width: 60;
+				                  yourself);
+		                 addColumn: (SpStringTableColumn title: 'Origin' evaluated: #url);
+		                 whenSelectionChangedDo: [ :selection | importButton enabled: selection isEmpty not ].
 
 	targetsTable := self newTable
-		                addColumn: (SpStringTableColumn title: 'Kind' evaluated: #kind);
+		                addColumn: (SpImageTableColumn new
+				                 evaluated: [ :project | self iconNamed: project iconName ];
+				                 beNotExpandable;
+				                 width: 20;
+				                 yourself);
+		                addColumn: ((SpStringTableColumn title: 'Kind' evaluated: #kind)
+				                 width: 80;
+				                 yourself);
 		                addColumn: (SpStringTableColumn title: 'Name' evaluated: #name);
 		                yourself.
 
@@ -74,5 +92,8 @@ SHProjectExplorerByNameOptionPresenter >> titleForWindow [
 { #category : #initialization }
 SHProjectExplorerByNameOptionPresenter >> updateListWithSearchPattern [
 
-	^ projectsList items: (SHProject projectsFromSearchPattern: textField text)
+	(SHProject projectsFromSearchPattern: textField text) ifNotEmpty: [ :projects |
+		projectsTable
+			items: projects;
+			selectFirst ]
 ]
