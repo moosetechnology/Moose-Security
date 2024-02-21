@@ -36,7 +36,7 @@ SHObject class >> jsonForQuery: aQuery [
 	| aSHObject |
 	aSHObject := self new.
 
-	^ STONJSON fromString: (aSHObject query: aQuery)
+	^ STONJSON fromString: (aSHObject querySH: aQuery)
 ]
 
 { #category : #accessing }
@@ -53,7 +53,20 @@ SHObject class >> newClient [
 { #category : #accessing }
 SHObject class >> query: aQuery [
 
-	^ self newClient get: 'https://archive.softwareheritage.org/api/1/' , aQuery
+	| client |
+	client := self newClient
+		          get: aQuery;
+		          yourself.
+
+	client isSuccess ifFalse: [ SHQueryException signalForData: (STONJSON fromString: client contents) ].
+
+	^ client contents
+]
+
+{ #category : #accessing }
+SHObject class >> querySH: aQuery [
+
+	^ self query: 'https://archive.softwareheritage.org/api/1/' , aQuery
 ]
 
 { #category : #settings }
@@ -87,12 +100,11 @@ SHObject >> jsonForQuery: aQuery [
 ]
 
 { #category : #accessing }
-SHObject >> newClient [
-
-	^ self class newClient
+SHObject >> query: aQuery [ 
+	^ self class query: aQuery 
 ]
 
 { #category : #accessing }
-SHObject >> query: aQuery [ 
-	^ self class query: aQuery 
+SHObject >> querySH: aQuery [ 
+	^ self class querySH: aQuery 
 ]

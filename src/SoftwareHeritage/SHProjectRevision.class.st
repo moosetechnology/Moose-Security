@@ -27,7 +27,7 @@ SHProjectRevision >> downloadArchive [
 	self temporaryArchiveName asFileReference
 		ensureDelete;
 		ensureCreateFile;
-		binaryWriteStreamDo: [ :s | s nextPutAll: (self newClient get: (requestResult at: #fetch_url)) ]
+		binaryWriteStreamDo: [ :s | s nextPutAll: (self query: (requestResult at: #fetch_url)) ]
 ]
 
 { #category : #action }
@@ -68,7 +68,7 @@ SHProjectRevision >> requestCooking [
 	"When we want to download a revision we need to request it's cooking first because it is possible it is not yet ready to download."
 
 	| requestResult |
-	requestResult := STONJSON fromString: (self newClient
+	requestResult := STONJSON fromString: (self class newClient
 			                  url: 'https://archive.softwareheritage.org/api/1/vault/directory/' , (data at: #directory) , '/';
 			                  post).
 
@@ -79,7 +79,7 @@ SHProjectRevision >> requestCooking [
 SHProjectRevision >> revision [
 	"I don't know why but in some cases to have all the info we need to ask the revision of the revision. This model is weird."
 
-	^ self class fromDictionary: (STONJSON fromString: (self newClient get: (data at: #target_url)))
+	^ self class fromDictionary: (STONJSON fromString: (self query: (data at: #target_url)))
 ]
 
 { #category : #action }
