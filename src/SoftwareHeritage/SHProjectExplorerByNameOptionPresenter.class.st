@@ -12,6 +12,12 @@ Class {
 	#category : #SoftwareHeritage
 }
 
+{ #category : #accessing }
+SHProjectExplorerByNameOptionPresenter class >> priority [
+
+	^ 1
+]
+
 { #category : #initialization }
 SHProjectExplorerByNameOptionPresenter >> connectPresenters [
 

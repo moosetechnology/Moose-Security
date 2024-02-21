@@ -18,7 +18,7 @@ SHProjectExplorerPresenter class >> example [
 { #category : #accessing }
 SHProjectExplorerPresenter >> allTypes [
 
-	^ { SHProjectExplorerByNameOptionPresenter new }
+	^ SHProjectExplorerOptionPresenter allTypes
 ]
 
 { #category : #layout }
