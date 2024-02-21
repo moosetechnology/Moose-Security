@@ -13,7 +13,7 @@ SHProjectRevision >> checkAvailability [
 
 	| requestResult |
 	isAvailableForDownload ifTrue: [ ^ self ]. "It is already available."
-	requestResult := STONJSON fromString: (ZnClient new get: 'https://archive.softwareheritage.org/api/1/vault/directory/' , (data at: #directory) , '/').
+	requestResult := self jsonForQuery: 'vault/directory/' , (data at: #directory) , '/'.
 
 	isAvailableForDownload := (requestResult at: #status) = #done
 ]
@@ -22,7 +22,7 @@ SHProjectRevision >> checkAvailability [
 SHProjectRevision >> downloadArchive [
 
 	| requestResult |
-	requestResult := STONJSON fromString: (ZnClient new get: 'https://archive.softwareheritage.org/api/1/vault/directory/' , (data at: #directory) , '/').
+	requestResult := self jsonForQuery: 'vault/directory/' , (data at: #directory) , '/'.
 
 	self temporaryArchiveName asFileReference
 		ensureDelete;
