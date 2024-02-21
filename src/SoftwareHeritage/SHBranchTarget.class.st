@@ -24,12 +24,6 @@ SHBranchTarget class >> priority [
 	^ 4
 ]
 
-{ #category : #action }
-SHBranchTarget >> downloadInFolderNamed: aString [
-
-	self revision downloadInFolderNamed: aString
-]
-
 { #category : #accessing }
 SHBranchTarget >> iconName [
 

@@ -46,22 +46,10 @@ SHProjectTarget class >> priority [
 	^ self subclassResponsibility
 ]
 
-{ #category : #action }
-SHProjectTarget >> download [
-
-	^ self downloadInFolderNamed: self downloadFolderName
-]
-
 { #category : #accessing }
 SHProjectTarget >> downloadFolderName [
 
 	^ FileSystem disk checkName: self kind , '_' , self name fixErrors: true
-]
-
-{ #category : #action }
-SHProjectTarget >> downloadInFolderNamed: aName [
-
-	self subclassResponsibility
 ]
 
 { #category : #accessing }
@@ -95,4 +83,11 @@ SHProjectTarget >> priority [
 SHProjectTarget >> revision [
 
 	^ SHProjectRevision fromDictionary: (STONJSON fromString: (ZnClient new get: (data at: #target_url)))
+]
+
+{ #category : #accessing }
+SHProjectTarget >> revisionToDownload [
+	"In order to download a target we need to go through a revision. But depending on the target the revision is not always the same."
+
+	^ self revision
 ]

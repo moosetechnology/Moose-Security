@@ -24,12 +24,6 @@ SHReleaseTarget class >> priority [
 	^ 2
 ]
 
-{ #category : #action }
-SHReleaseTarget >> downloadInFolderNamed: aString [
-
-	self error: 'Not supported yet'
-]
-
 { #category : #accessing }
 SHReleaseTarget >> iconName [
 
@@ -39,4 +33,10 @@ SHReleaseTarget >> iconName [
 { #category : #accessing }
 SHReleaseTarget >> kind [
 	^ #Release
+]
+
+{ #category : #action }
+SHReleaseTarget >> revisionToDownload [
+
+	self error: 'Not supported yet'
 ]

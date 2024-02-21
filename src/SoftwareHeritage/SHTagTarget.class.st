@@ -24,12 +24,6 @@ SHTagTarget class >> priority [
 	^ 3
 ]
 
-{ #category : #action }
-SHTagTarget >> downloadInFolderNamed: aString [
-
-	self revision revision downloadInFolderNamed: aString
-]
-
 { #category : #accessing }
 SHTagTarget >> iconName [
 
@@ -40,4 +34,10 @@ SHTagTarget >> iconName [
 SHTagTarget >> kind [
 
 	^ #Tag
+]
+
+{ #category : #action }
+SHTagTarget >> revisionToDownload [
+
+	^ self revision revision
 ]
