@@ -9,6 +9,12 @@ Class {
 }
 
 { #category : #'instance creation' }
+SHProject class >> fromOrigin: aString [
+
+	^ self fromDictionary: (self jsonForQuery: 'origin/' , aString , '/get/')
+]
+
+{ #category : #'instance creation' }
 SHProject class >> projectsFromSearchPattern: aString [
 
 	^ (self jsonForQuery: 'origin/search/' , aString , '/?with_visit=true&limit=1000') collect: [ :dictionary | self fromDictionary: dictionary ]

@@ -27,7 +27,7 @@ SHProjectRevision >> downloadArchive [
 	self temporaryArchiveName asFileReference
 		ensureDelete;
 		ensureCreateFile;
-		binaryWriteStreamDo: [ :s | s nextPutAll: (self query: (requestResult at: #fetch_url)) ]
+		binaryWriteStreamDo: [ :s | s nextPutAll: (ZnClient new get: (requestResult at: #fetch_url)) ]
 ]
 
 { #category : #action }
