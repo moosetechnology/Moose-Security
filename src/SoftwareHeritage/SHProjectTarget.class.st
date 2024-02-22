@@ -12,7 +12,7 @@ SHProjectTarget class >> allTargetsFrom: aDictionary [
 	"I don't really know what are the remotes references so for now I'm excluding them..."
 
 	^ (aDictionary associations
-		   select: [ :asso | (asso key beginsWith: 'refs/remotes/') not ]
+		   select: [ :asso | (asso key beginsWith: 'refs/remotes/') not and: [ ((asso value at: #target_type) = #directory) not "Not managed yet" ] ]
 		   thenCollect: [ :asso |
 			   (self from: asso key)
 				   data: asso value;
