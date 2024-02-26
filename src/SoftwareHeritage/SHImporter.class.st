@@ -11,7 +11,7 @@ Class {
 { #category : 'accessing' }
 SHImporter class >> defaultVerveineJDirectory [
 
-	^ FileSystem workingDirectory
+	^ FileSystem workingDirectory / 'VerveineJ'
 ]
 
 { #category : 'actions' }
@@ -72,9 +72,7 @@ SHImporter >> download: aListOfTargets [
 		progress: 0.66;
 		title: 'Downloading'.
 	WorldMorph doOneCycle.
-	revisionsToDownloadMap keysAndValuesDo: [ :folderName :revision | revision downloadInFolderNamed: folderName ].
-
-	'.' asFileReference openInOSFileBrowser ] asJob run
+	revisionsToDownloadMap keysAndValuesDo: [ :folderName :revision | revision downloadInFolderNamed: folderName ] ] asJob run
 ]
 
 { #category : 'actions' }
@@ -87,5 +85,25 @@ SHImporter >> downloadAndImport: aListOfTargets [
 
 { #category : 'initialization' }
 SHImporter >> ensureVerveineJ [
-	
+
+	self verveineJScript ifAbsent: [
+		IceGitClone new
+			location: self verveineJPath;
+			url: 'https://github.com/moosetechnology/VerveineJ.git';
+			execute.
+
+		self verveineJScript ifAbsent: [ self error: 'Cannot download verveineJ.' ] ]
+]
+
+{ #category : 'accessing' }
+SHImporter >> verveineJPath [
+
+	^ self class verveineJPath
+]
+
+{ #category : 'accessing' }
+SHImporter >> verveineJScript [
+	"Manage windows later?"
+
+	^ self verveineJPath / 'verveinej.sh'
 ]
