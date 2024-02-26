@@ -124,10 +124,17 @@ SHImporter >> importModels [
 			| json importer model |
 			json := (self jsonForFolder: folder) asFileReference.
 			importer := MiAbstractFileImporter importerFor: json.
-			
-			model := importer findPossibleModelClassIn: MooseModel possibleModelsToImportFromFiles forFile: json.
-			1halt.
-			 ]
+
+			model := (importer findPossibleModelClassIn: MooseModel possibleModelsToImportFromFiles forFile: json) new.
+
+			importer new
+				model: model;
+				inputFile: json;
+				run.
+
+			model
+				name: folder basename;
+				install ]
 		displayingProgress: [ :folder | folder basename ]
 ]
 
