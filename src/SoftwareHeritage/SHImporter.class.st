@@ -1,6 +1,9 @@
 Class {
 	#name : 'SHImporter',
 	#superclass : 'Object',
+	#instVars : [
+		'downloadedFolders'
+	],
 	#classVars : [
 		'VerveineJPath'
 	],
@@ -72,7 +75,9 @@ SHImporter >> download: aListOfTargets [
 		progress: 0.66;
 		title: 'Downloading'.
 	WorldMorph doOneCycle.
-	revisionsToDownloadMap keysAndValuesDo: [ :folderName :revision | revision downloadInFolderNamed: folderName ] ] asJob run
+	revisionsToDownloadMap keysAndValuesDo: [ :folderName :revision |
+		revision downloadInFolderNamed: folderName.
+		downloadedFolders add: folderName asFileReference ] ] asJob run
 ]
 
 { #category : 'actions' }
@@ -80,7 +85,9 @@ SHImporter >> downloadAndImport: aListOfTargets [
 
 	self download: aListOfTargets.
 
-	self ensureVerveineJ
+	self ensureVerveineJ.
+	
+	self generateJsonOfProjects
 ]
 
 { #category : 'initialization' }
@@ -93,6 +100,25 @@ SHImporter >> ensureVerveineJ [
 			execute.
 
 		self verveineJScript ifAbsent: [ self error: 'Cannot download verveineJ.' ] ]
+]
+
+{ #category : 'actions' }
+SHImporter >> generateJsonOfProjects [
+
+	downloadedFolders
+		do: [ :folder |
+			LibC runCommand: ('{1} -o {2}.json -format json {3}' format: {
+						 self verveineJScript pathString asComment.
+						 folder basename.
+						 folder pathString asComment }) ]
+		displayingProgress: [ :folder | folder pathString ]
+]
+
+{ #category : 'initialization' }
+SHImporter >> initialize [
+
+	super initialize.
+	downloadedFolders := OrderedCollection new
 ]
 
 { #category : 'accessing' }
