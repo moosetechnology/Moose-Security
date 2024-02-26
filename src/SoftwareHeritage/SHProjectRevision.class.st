@@ -1,13 +1,14 @@
 Class {
-	#name : #SHProjectRevision,
-	#superclass : #SHObject,
+	#name : 'SHProjectRevision',
+	#superclass : 'SHObject',
 	#instVars : [
 		'isAvailableForDownload'
 	],
-	#category : #SoftwareHeritage
+	#category : 'SoftwareHeritage',
+	#package : 'SoftwareHeritage'
 }
 
-{ #category : #action }
+{ #category : 'action' }
 SHProjectRevision >> checkAvailability [
 	"When we want to download a revision we need to request it's cooking first because it is possible it is not yet ready to download. This method allows to check if the revision is ready to be downloaded."
 
@@ -18,7 +19,7 @@ SHProjectRevision >> checkAvailability [
 	isAvailableForDownload := (requestResult at: #status) = #done
 ]
 
-{ #category : #action }
+{ #category : 'action' }
 SHProjectRevision >> downloadArchive [
 
 	| requestResult |
@@ -30,7 +31,7 @@ SHProjectRevision >> downloadArchive [
 		binaryWriteStreamDo: [ :s | s nextPutAll: (ZnClient new get: (requestResult at: #fetch_url)) ]
 ]
 
-{ #category : #action }
+{ #category : 'action' }
 SHProjectRevision >> downloadInFolderNamed: aString [
 
 	aString asFileReference
@@ -44,26 +45,26 @@ SHProjectRevision >> downloadInFolderNamed: aString [
 	self temporaryArchiveName asFileReference ensureDelete
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 SHProjectRevision >> initialize [
 
 	super initialize.
 	isAvailableForDownload := false
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHProjectRevision >> isAvailableForDownload [
 
 	^ isAvailableForDownload
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHProjectRevision >> isAvailableForDownload: aBoolean [
 
 	isAvailableForDownload := aBoolean
 ]
 
-{ #category : #action }
+{ #category : 'action' }
 SHProjectRevision >> requestCooking [
 	"When we want to download a revision we need to request it's cooking first because it is possible it is not yet ready to download."
 
@@ -75,14 +76,14 @@ SHProjectRevision >> requestCooking [
 	isAvailableForDownload := (requestResult at: #status) = #done
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHProjectRevision >> revision [
 	"I don't know why but in some cases to have all the info we need to ask the revision of the revision. This model is weird."
 
 	^ self class fromDictionary: (STONJSON fromString: (self query: (data at: #target_url)))
 ]
 
-{ #category : #action }
+{ #category : 'action' }
 SHProjectRevision >> temporaryArchiveName [
 
 	^ 'temporary_archive_from_software_heritage.tar.gz'

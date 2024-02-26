@@ -1,22 +1,23 @@
 Class {
-	#name : #SHProjectExplorerOptionPresenter,
-	#superclass : #SpPresenter,
-	#category : #SoftwareHeritage
+	#name : 'SHProjectExplorerOptionPresenter',
+	#superclass : 'SpPresenter',
+	#category : 'SoftwareHeritage',
+	#package : 'SoftwareHeritage'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHProjectExplorerOptionPresenter class >> allTypes [
 
 	^ (self allSubclasses sort: #priority ascending) collect: [ :class | class new ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHProjectExplorerOptionPresenter class >> priority [
 
 	^ self subclassResponsibility
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 SHProjectExplorerOptionPresenter >> titleForWindow [
 
 	self subclassResponsibility

@@ -1,21 +1,22 @@
 Class {
-	#name : #SHProjectExplorerTargetSelectionPresenter,
-	#superclass : #SpPresenter,
+	#name : 'SHProjectExplorerTargetSelectionPresenter',
+	#superclass : 'SpPresenter',
 	#instVars : [
 		'importButton',
 		'targetsTable',
 		'selectedTargets'
 	],
-	#category : #SoftwareHeritage
+	#category : 'SoftwareHeritage',
+	#package : 'SoftwareHeritage'
 }
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 SHProjectExplorerTargetSelectionPresenter >> connectPresenters [
 
 	importButton action: [ SHImporter downloadAndImport: selectedTargets ]
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 SHProjectExplorerTargetSelectionPresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
@@ -25,7 +26,7 @@ SHProjectExplorerTargetSelectionPresenter >> defaultLayout [
 		  yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHProjectExplorerTargetSelectionPresenter >> forProject: aProject [
 
 	selectedTargets := OrderedCollection new.
@@ -36,7 +37,7 @@ SHProjectExplorerTargetSelectionPresenter >> forProject: aProject [
 		selectFirst
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 SHProjectExplorerTargetSelectionPresenter >> initializePresenters [
 
 	super initializePresenters.

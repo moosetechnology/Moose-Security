@@ -1,16 +1,17 @@
 Class {
-	#name : #SHReleaseTarget,
-	#superclass : #SHProjectTarget,
-	#category : #SoftwareHeritage
+	#name : 'SHReleaseTarget',
+	#superclass : 'SHProjectTarget',
+	#category : 'SoftwareHeritage',
+	#package : 'SoftwareHeritage'
 }
 
-{ #category : #testing }
+{ #category : 'testing' }
 SHReleaseTarget class >> isValidFor: aReference [
 
 	^ aReference beginsWith: 'releases/'
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 SHReleaseTarget class >> newWith: aReference [
 
 	^ self new
@@ -18,24 +19,24 @@ SHReleaseTarget class >> newWith: aReference [
 		  yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHReleaseTarget class >> priority [
 
 	^ 2
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHReleaseTarget >> iconName [
 
 	^ #glamorousBookmark
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHReleaseTarget >> kind [
 	^ #Release
 ]
 
-{ #category : #action }
+{ #category : 'action' }
 SHReleaseTarget >> revisionToDownload [
 
 	self error: 'Not supported yet'

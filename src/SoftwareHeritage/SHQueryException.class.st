@@ -1,13 +1,14 @@
 Class {
-	#name : #SHQueryException,
-	#superclass : #Exception,
+	#name : 'SHQueryException',
+	#superclass : 'Exception',
 	#instVars : [
 		'data'
 	],
-	#category : #SoftwareHeritage
+	#category : 'SoftwareHeritage',
+	#package : 'SoftwareHeritage'
 }
 
-{ #category : #signalling }
+{ #category : 'signalling' }
 SHQueryException class >> signalForData: aCollection [
 
 	^ self new
@@ -15,12 +16,12 @@ SHQueryException class >> signalForData: aCollection [
 		  signal
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHQueryException >> data: anObject [
 	data := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHQueryException >> messageText [
 
 	^ 'An exception happened during the query. Response: ' , data printString

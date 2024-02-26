@@ -1,43 +1,51 @@
 Class {
-	#name : #SHImporter,
-	#superclass : #Object,
+	#name : 'SHImporter',
+	#superclass : 'Object',
 	#classVars : [
 		'VerveineJPath'
 	],
-	#category : #SoftwareHeritage
+	#category : 'SoftwareHeritage',
+	#package : 'SoftwareHeritage'
 }
 
-{ #category : #actions }
+{ #category : 'accessing' }
+SHImporter class >> defaultVerveineJDirectory [
+
+	^ FileSystem workingDirectory
+]
+
+{ #category : 'actions' }
 SHImporter class >> downloadAndImport: aListOfTargets [
 
 	^ self new downloadAndImport: aListOfTargets
 ]
 
-{ #category : #settings }
-SHImporter class >> softwareHeritageSettingsOn: aBuilder [
+{ #category : 'settings' }
+SHImporter class >> importSettingsOn: aBuilder [
 
 	<systemsettings>
 	(aBuilder setting: #verveineJPath)
-		target: self;
 		parent: #SoftwareHeritage;
 		type: #FilePathEncoder;
+		default: self verveineJPath;
 		label: 'VerveineJ path';
-		description: 'If you wish to use your own version of verveineJ you can specify your own path to it..'
+		description: 'If you wish to use your own version of verveineJ you can specify your own path to it..';
+		target: self
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHImporter class >> verveineJPath [
 
-	^ VerveineJPath
+	^ VerveineJPath ifNil: [ VerveineJPath := self defaultVerveineJDirectory ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHImporter class >> verveineJPath: anObject [
 
 	VerveineJPath := anObject
 ]
 
-{ #category : #actions }
+{ #category : 'actions' }
 SHImporter >> download: aListOfTargets [
 
 	[ :job |
@@ -69,7 +77,7 @@ SHImporter >> download: aListOfTargets [
 	'.' asFileReference openInOSFileBrowser ] asJob run
 ]
 
-{ #category : #actions }
+{ #category : 'actions' }
 SHImporter >> downloadAndImport: aListOfTargets [
 
 	self download: aListOfTargets.
@@ -77,7 +85,7 @@ SHImporter >> downloadAndImport: aListOfTargets [
 	self ensureVerveineJ
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 SHImporter >> ensureVerveineJ [
 	
 ]

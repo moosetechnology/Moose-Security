@@ -1,16 +1,17 @@
 Class {
-	#name : #SHHeadTarget,
-	#superclass : #SHProjectTarget,
-	#category : #SoftwareHeritage
+	#name : 'SHHeadTarget',
+	#superclass : 'SHProjectTarget',
+	#category : 'SoftwareHeritage',
+	#package : 'SoftwareHeritage'
 }
 
-{ #category : #testing }
+{ #category : 'testing' }
 SHHeadTarget class >> isValidFor: aReference [
 
 	^ aReference = 'HEAD'
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 SHHeadTarget class >> newWith: aReference [
 
 	^ self new
@@ -18,13 +19,13 @@ SHHeadTarget class >> newWith: aReference [
 		  yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHHeadTarget class >> priority [
 
 	^ 1
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHHeadTarget >> data: aDictionary [
 
 	super data: aDictionary.
@@ -32,13 +33,13 @@ SHHeadTarget >> data: aDictionary [
 	self name: ((aDictionary at: #target) withoutPrefix: 'refs/heads/')
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHHeadTarget >> iconName [
 
 	^ #smallHome
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHHeadTarget >> kind [
 
 	^ #Head

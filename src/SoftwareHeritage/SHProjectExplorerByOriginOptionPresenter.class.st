@@ -1,27 +1,28 @@
 Class {
-	#name : #SHProjectExplorerByOriginOptionPresenter,
-	#superclass : #SHProjectExplorerOptionPresenter,
+	#name : 'SHProjectExplorerByOriginOptionPresenter',
+	#superclass : 'SHProjectExplorerOptionPresenter',
 	#instVars : [
 		'textField',
 		'searchButton',
 		'targetImporter'
 	],
-	#category : #SoftwareHeritage
+	#category : 'SoftwareHeritage',
+	#package : 'SoftwareHeritage'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHProjectExplorerByOriginOptionPresenter class >> priority [
 
 	^ 5
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 SHProjectExplorerByOriginOptionPresenter >> connectPresenters [
 
 	searchButton action: [ self searchOrigin ]
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 SHProjectExplorerByOriginOptionPresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
@@ -33,7 +34,7 @@ SHProjectExplorerByOriginOptionPresenter >> defaultLayout [
 		  yourself
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 SHProjectExplorerByOriginOptionPresenter >> errorLayout [
 
 	^ SpBoxLayout newTopToBottom
@@ -45,7 +46,7 @@ SHProjectExplorerByOriginOptionPresenter >> errorLayout [
 		  yourself
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 SHProjectExplorerByOriginOptionPresenter >> initializePresenters [
 
 	super initializePresenters.
@@ -64,7 +65,7 @@ SHProjectExplorerByOriginOptionPresenter >> initializePresenters [
 	targetImporter := self instantiate: SHProjectExplorerTargetSelectionPresenter new
 ]
 
-{ #category : #actions }
+{ #category : 'actions' }
 SHProjectExplorerByOriginOptionPresenter >> searchOrigin [
 
 	[
@@ -74,7 +75,7 @@ SHProjectExplorerByOriginOptionPresenter >> searchOrigin [
 		do: [ self layout: self errorLayout ]
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 SHProjectExplorerByOriginOptionPresenter >> titleForWindow [
 
 	^ 'Search by origin'

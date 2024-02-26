@@ -1,13 +1,14 @@
 Class {
-	#name : #SHProjectSnapshot,
-	#superclass : #SHObject,
+	#name : 'SHProjectSnapshot',
+	#superclass : 'SHObject',
 	#instVars : [
 		'branches'
 	],
-	#category : #SoftwareHeritage
+	#category : 'SoftwareHeritage',
+	#package : 'SoftwareHeritage'
 }
 
-{ #category : #branches }
+{ #category : 'branches' }
 SHProjectSnapshot >> branches [
 
 	^ branches ifNil: [ branches := SHProjectTarget allTargetsFrom: (data at: #branches) ]

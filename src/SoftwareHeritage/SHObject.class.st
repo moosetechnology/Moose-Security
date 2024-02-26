@@ -1,28 +1,29 @@
 Class {
-	#name : #SHObject,
-	#superclass : #Object,
+	#name : 'SHObject',
+	#superclass : 'Object',
 	#instVars : [
 		'data'
 	],
 	#classVars : [
 		'BearerAuthentificationToken'
 	],
-	#category : #SoftwareHeritage
+	#category : 'SoftwareHeritage',
+	#package : 'SoftwareHeritage'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHObject class >> bearerAuthentificationToken [
 
-	^ BearerAuthentificationToken
+	^ BearerAuthentificationToken ifNil: [ BearerAuthentificationToken := '' ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHObject class >> bearerAuthentificationToken: aString [
 
 	BearerAuthentificationToken := aString
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 SHObject class >> fromDictionary: aDictionary [
 
 	^ self new
@@ -30,7 +31,7 @@ SHObject class >> fromDictionary: aDictionary [
 		  yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHObject class >> jsonForQuery: aQuery [
 
 	| aSHObject |
@@ -39,18 +40,18 @@ SHObject class >> jsonForQuery: aQuery [
 	^ STONJSON fromString: (aSHObject querySH: aQuery)
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHObject class >> newClient [
 
 	| client |
 	client := ZnClient new.
 
-	self bearerAuthentificationToken ifNotNil: [ :token | client setBearerAuthentication: token ].
+	self bearerAuthentificationToken ifNotEmpty: [ :token | client setBearerAuthentication: token ].
 
 	^ client
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHObject class >> query: aQuery [
 
 	| client |
@@ -63,13 +64,13 @@ SHObject class >> query: aQuery [
 	^ client contents
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHObject class >> querySH: aQuery [
 
 	^ self query: 'https://archive.softwareheritage.org/api/1/' , aQuery
 ]
 
-{ #category : #settings }
+{ #category : 'settings' }
 SHObject class >> softwareHeritageSettingsOn: aBuilder [
 
 	<systemsettings>
@@ -79,32 +80,33 @@ SHObject class >> softwareHeritageSettingsOn: aBuilder [
 			(aBuilder setting: #bearerAuthentificationToken)
 				type: #Password;
 				label: 'Bearer authentification token';
+				default: '';
 				description: 'Software heritage bearer authentification token to authentificate request and increase API limit rate.' ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHObject >> data [
 
 	^ data
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHObject >> data: aDictionary [
 
 	data := aDictionary
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHObject >> jsonForQuery: aQuery [ 
 	^ self class jsonForQuery: aQuery 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHObject >> query: aQuery [ 
 	^ self class query: aQuery 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHObject >> querySH: aQuery [ 
 	^ self class querySH: aQuery 
 ]

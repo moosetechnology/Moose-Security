@@ -1,16 +1,17 @@
 Class {
-	#name : #SHPullRequestTarget,
-	#superclass : #SHProjectTarget,
-	#category : #SoftwareHeritage
+	#name : 'SHPullRequestTarget',
+	#superclass : 'SHProjectTarget',
+	#category : 'SoftwareHeritage',
+	#package : 'SoftwareHeritage'
 }
 
-{ #category : #testing }
+{ #category : 'testing' }
 SHPullRequestTarget class >> isValidFor: aReference [
 
 	^ aReference beginsWith: 'refs/pull'
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 SHPullRequestTarget class >> newWith: aReference [
 
 	^ self new
@@ -18,19 +19,19 @@ SHPullRequestTarget class >> newWith: aReference [
 		  yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHPullRequestTarget class >> priority [
 
 	^ 10
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHPullRequestTarget >> iconName [
 
 	^ #merge
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHPullRequestTarget >> kind [
 
 	^ #'Pull request'

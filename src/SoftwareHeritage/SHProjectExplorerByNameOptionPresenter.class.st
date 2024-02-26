@@ -1,28 +1,29 @@
 Class {
-	#name : #SHProjectExplorerByNameOptionPresenter,
-	#superclass : #SHProjectExplorerOptionPresenter,
+	#name : 'SHProjectExplorerByNameOptionPresenter',
+	#superclass : 'SHProjectExplorerOptionPresenter',
 	#instVars : [
 		'textField',
 		'searchButton',
 		'targetImporter',
 		'projectsTable'
 	],
-	#category : #SoftwareHeritage
+	#category : 'SoftwareHeritage',
+	#package : 'SoftwareHeritage'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHProjectExplorerByNameOptionPresenter class >> priority [
 
 	^ 1
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 SHProjectExplorerByNameOptionPresenter >> connectPresenters [
 
 	searchButton action: [ self updateListWithSearchPattern ]
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 SHProjectExplorerByNameOptionPresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
@@ -36,7 +37,7 @@ SHProjectExplorerByNameOptionPresenter >> defaultLayout [
 		  yourself
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 SHProjectExplorerByNameOptionPresenter >> initializePresenters [
 
 	super initializePresenters.
@@ -61,13 +62,13 @@ SHProjectExplorerByNameOptionPresenter >> initializePresenters [
 	targetImporter := self instantiate: SHProjectExplorerTargetSelectionPresenter new
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 SHProjectExplorerByNameOptionPresenter >> titleForWindow [
 
 	^ 'Search by name'
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 SHProjectExplorerByNameOptionPresenter >> updateListWithSearchPattern [
 
 	(SHProject projectsFromSearchPattern: textField text) ifNotEmpty: [ :projects |

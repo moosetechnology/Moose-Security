@@ -1,27 +1,28 @@
 Class {
-	#name : #SHProjectExplorerPresenter,
-	#superclass : #SpPresenter,
+	#name : 'SHProjectExplorerPresenter',
+	#superclass : 'SpPresenter',
 	#instVars : [
 		'typeList',
 		'selectedType',
 		'contentLayout'
 	],
-	#category : #SoftwareHeritage
+	#category : 'SoftwareHeritage',
+	#package : 'SoftwareHeritage'
 }
 
-{ #category : #examples }
+{ #category : 'examples' }
 SHProjectExplorerPresenter class >> example [
 
 	self new open
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SHProjectExplorerPresenter >> allTypes [
 
 	^ SHProjectExplorerOptionPresenter allTypes
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 SHProjectExplorerPresenter >> defaultLayout [
 
 	^ SpPanedLayout newLeftToRight
@@ -31,7 +32,7 @@ SHProjectExplorerPresenter >> defaultLayout [
 		  yourself
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 SHProjectExplorerPresenter >> initializePresenters [
 
 	(typeList := self newList)
@@ -43,7 +44,7 @@ SHProjectExplorerPresenter >> initializePresenters [
 	contentLayout := SpBoxLayout newTopToBottom
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 SHProjectExplorerPresenter >> initializeWindow: aSpWindowPresenter [
 
 	super initializeWindow: aSpWindowPresenter.
@@ -52,7 +53,7 @@ SHProjectExplorerPresenter >> initializeWindow: aSpWindowPresenter [
 	aSpWindowPresenter whenOpenedDo: [ typeList selectIndex: 1 ]
 ]
 
-{ #category : #'event handling' }
+{ #category : 'event handling' }
 SHProjectExplorerPresenter >> replacePanel [
 
 	contentLayout
@@ -60,7 +61,7 @@ SHProjectExplorerPresenter >> replacePanel [
 		add: selectedType 
 ]
 
-{ #category : #'event handling' }
+{ #category : 'event handling' }
 SHProjectExplorerPresenter >> selectionChanged: aType [
 
 	selectedType := aType.
@@ -69,7 +70,7 @@ SHProjectExplorerPresenter >> selectionChanged: aType [
 		self replacePanel ]
 ]
 
-{ #category : #'event handling' }
+{ #category : 'event handling' }
 SHProjectExplorerPresenter >> updateWindowTitle [
 
 	self window title: selectedType titleForWindow
