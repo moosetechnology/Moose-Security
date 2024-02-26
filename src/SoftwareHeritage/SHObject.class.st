@@ -73,7 +73,7 @@ SHObject class >> querySH: aQuery [
 SHObject class >> softwareHeritageSettingsOn: aBuilder [
 
 	<systemsettings>
-	(aBuilder group: #SoftwareHEritage)
+	(aBuilder group: #SoftwareHeritage)
 		label: 'SoftwareHeritage';
 		with: [
 			(aBuilder setting: #bearerAuthentificationToken)
