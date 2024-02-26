@@ -87,7 +87,9 @@ SHImporter >> downloadAndImport: aListOfTargets [
 
 	self ensureVerveineJ.
 	
-	self generateJsonOfProjects
+	self generateJsonOfProjects.
+	
+	self importModels
 ]
 
 { #category : 'initialization' }
@@ -107,11 +109,26 @@ SHImporter >> generateJsonOfProjects [
 
 	downloadedFolders
 		do: [ :folder |
-			LibC runCommand: ('{1} -o {2}.json -format json {3}' format: {
+			LibC runCommand: ('{1} -o {2} -format json {3}' format: {
 						 self verveineJScript pathString asComment.
-						 folder basename.
+						 (self jsonForFolder: folder).
 						 folder pathString asComment }) ]
 		displayingProgress: [ :folder | folder pathString ]
+]
+
+{ #category : 'actions' }
+SHImporter >> importModels [
+
+	downloadedFolders
+		do: [ :folder |
+			| json importer model |
+			json := (self jsonForFolder: folder) asFileReference.
+			importer := MiAbstractFileImporter importerFor: json.
+			
+			model := importer findPossibleModelClassIn: MooseModel possibleModelsToImportFromFiles forFile: json.
+			1halt.
+			 ]
+		displayingProgress: [ :folder | folder basename ]
 ]
 
 { #category : 'initialization' }
@@ -119,6 +136,12 @@ SHImporter >> initialize [
 
 	super initialize.
 	downloadedFolders := OrderedCollection new
+]
+
+{ #category : 'actions' }
+SHImporter >> jsonForFolder: folder [
+
+	^ folder basename , '.json'
 ]
 
 { #category : 'accessing' }
