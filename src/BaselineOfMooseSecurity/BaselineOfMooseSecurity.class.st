@@ -11,5 +11,6 @@ BaselineOfMooseSecurity >> baseline: spec [
 	spec for: #common do: [
 		spec
 			package: 'Moose-Security';
-			package: 'MooseIDE-Security' ]
+			package: 'MooseIDE-Security';
+			package: 'SoftwareHeritage' ]
 ]
