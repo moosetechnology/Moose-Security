@@ -5,15 +5,20 @@ Class {
 		'addedtag',
 		'removedTag',
 		'modifiedTag',
-		'diffModel'
+		'diffModel',
+		'removedEntites',
+		'addedEntites'
 	],
 	#category : #'Moose-Security'
 }
 
 { #category : #'instance creation' }
 SEDiffModels >> baseModel: baseModel targetModel: targetModel [
+	diffModel := FXDiff
+		             runOnBaseModel: baseModel
+		             targetModel: targetModel.
 
-	diffModel :=  FXDiff runOnBaseModel: baseModel targetModel: targetModel.
+
 	self tagsCreation.
 	self entitiesTagger.
 	self displayDiff
@@ -33,53 +38,62 @@ SEDiffModels >> diffModel: anObject [
 
 { #category : #'as yet unclassified' }
 SEDiffModels >> displayDiff [
+
 	| entitiesDiff resultDiff browser |
 	resultDiff := diffModel result.
-	entitiesDiff := resultDiff collect: [ :e | e entity ].
-	entitiesDiff value miPropagate.
+
+	"entitiesDiff := resultDiff collect: [ :e | e entity ].
+	diffModel baseModel value miPropagate."
+
+
+	addedEntites value miPropagate.
+	browser := MiArchitecturalMapBrowser open.
+	browser beFrozen.
+	browser window title: browser window title , ' [ diff add]'.
+
+	removedEntites value miPropagate.
 
 	browser := MiArchitecturalMapBrowser open.
 	browser beFrozen.
-	browser window title: browser window title , ' [ diff ]'
+	browser window title: browser window title , ' [ diff remove]'
 ]
 
 { #category : #'as yet unclassified' }
 SEDiffModels >> entitiesTagger [
 
-	| resultDiff removedEntites added addedEntites modifiedEntites |
+	| resultDiff "removedEntites addedEntites" |
 	resultDiff := diffModel result.
+	SEVulnerabilityTagger tagAndVisualizeTags:  diffModel baseModel.
 
 	removedEntites := resultDiff removalChanges collect: [ :e | e entity ].
 	removedEntites do: [ :e | e tagWith: removedTag ].
 
-	added := resultDiff select: [ :e | e isAddition ].
-	addedEntites := added collect: [ :e | e entity ].
-	addedEntites do: [ :e | e tagWith: addedtag ].
 
-	modifiedEntites := resultDiff bodyChanges collect: [ :e | e entity ].
+	addedEntites := resultDiff addChanges collect: [ :e | e entity ].
+	addedEntites do: [ :e | e tagWith: addedtag ]
+]
 
-	modifiedEntites do: [ :e | e tagWith: modifiedTag ]
+{ #category : #'as yet unclassified' }
+SEDiffModels >> propagate: ablock [ 
+	
+	| browser|
+	
+	ablock value miPropagate.
+
+	browser := MiArchitecturalMapBrowser open.
+	browser beFrozen.
+	browser window title:
+		browser window title , ' [Test]'
 ]
 
 { #category : #'as yet unclassified' }
 SEDiffModels >> tagsCreation [
 
-	addedtag := (diffModel baseModel tagNamed: 'added') color:
-		            (Color
-			             r: 0.07038123167155426
-			             g: 1.99022482893451
-			             b: 0.30
-			             alpha: 1.0).
+	addedtag := (diffModel baseModel tagNamed: 'added') color: Color blue.
+
 	removedTag := (diffModel baseModel tagNamed: 'removed') color:
-		              (Color
-			               r: 1.997038123167155426
-			               g: 0.00
-			               b: 0.0
-			               alpha: 1.0).
-	modifiedTag := (diffModel baseModel tagNamed: 'modified')
-		               color: (Color
-				                r: 2.9938123167155426
-				                g: 0.90
-				                b: 0.0
-				                alpha: 1.0)
+		              Color red.
+"
+	modifiedTag := (diffModel baseModel tagNamed: 'modified') color:
+		               Color yellow"
 ]
