@@ -1,8 +1,23 @@
 Class {
 	#name : #SESerialisationTagger,
 	#superclass : #SEVulnerabilityTagger,
+	#classInstVars : [
+		'assocChanges'
+	],
 	#category : #'Moose-Security'
 }
+
+{ #category : #'default taggers' }
+SESerialisationTagger class >> assocChanges [
+
+ ^ assocChanges 
+]
+
+{ #category : #'default taggers' }
+SESerialisationTagger class >> assocChanges: aBlock [
+
+  assocChanges := aBlock 
+]
 
 { #category : #'default taggers' }
 SESerialisationTagger class >> execTagger [
@@ -80,6 +95,19 @@ SESerialisationTagger class >> serializableClassTagger [
 
 	<cautionTagger>
 	^ self tagResultOf: [ :model :tagger | tagger classesImplementing: #Serializable in: model ]
+]
+
+{ #category : #'default taggers' }
+SESerialisationTagger class >> serializableImplementationTagger [
+
+	<cautionTagger>
+	| aBlock|
+		
+	aBlock := self assocChanges select: [ :change | change entity allTargets anySatisfy: [ :target | target name = 'Serializable' ]].
+	
+	^ self tagResultOf: [ aBlock  collect: [ :e | e entity ]] .
+ 	
+
 ]
 
 { #category : #accessing }

@@ -72,26 +72,26 @@ SEDiffModels >> displayDiff: resultDiff [
 	test:= entitiesDiff collect: [:e | e entity].
 	test value miPropagate."
 	
-	"addedEntitesTagged value miPropagate."
+	addedEntitesTagged value miPropagate.
 	
-	addedEntites value miPropagate.
+"	addedEntites value miPropagate."
 	browser := MiArchitecturalMapBrowser open.
 	browser beFrozen .
 	browser window title: browser window title , ' [ diff add]'.
 
-"	removedEntitesTagged value miPropagate."
-	removedEntites value miPropagate.
+	removedEntitesTagged value miPropagate.
+"	removedEntites value miPropagate."
 	browser := MiArchitecturalMapBrowser open.
 	browser beFrozen.
 	browser window title: browser window title , ' [ diff remove]'.
 
 
-"	assocAddedEntitiesTagged value miPropagate."
+	assocAddedEntitiesTagged value miPropagate.
 	
-	assocAddedEntities value miPropagate.
+	"assocAddedEntities value miPropagate."
 	browser := MiArchitecturalMapBrowser open.
 	browser beFrozen.
-	browser window title: browser window title , ' [ diff assosChanges]'
+	browser window title: browser window title , ' [ diff assosChanges]'	
 ]
 
 { #category : #'as yet unclassified' }
@@ -99,32 +99,33 @@ SEDiffModels >> entitiesTagger [
 
 	| resultDiff "removedEntites addedEntites"   "assocAdded" assocChanges |
 	resultDiff := diffModel result.
-
+	SESerialisationTagger assocChanges: resultDiff assocChanges .
+	
 	"SESerialisationTagger assocChanges: resultDiff  ."
 	
 	"SEVulnerabilityTagger tagAllVulnerabilitiesOf: diffModel targetModel."
 	
 	removedEntites := resultDiff removalChanges collect: [ :e | e entity ].
-	removedEntitesTagged := removedEntites collect: [ :e | e isTagged  ].
+	SESerialisationTagger tagAllVulnerabilitiesOf: removedEntites  anyOne mooseModel  .
+	removedEntitesTagged := removedEntites select: [ :e | e isTagged  ].
 	
 	addedEntites := resultDiff addChanges collect: [ :e | e entity ].
-	addedEntitesTagged := removedEntites collect: [ :e | e isTagged  ].
+	SESerialisationTagger tagAllVulnerabilitiesOf: addedEntites anyOne mooseModel  .
+	addedEntitesTagged := addedEntites select: [ :e | e isTagged  ].
 	
 	
 	assocChanges := resultDiff assocChanges allWithType: FamixAddChange.
 	assocAddedEntities := assocChanges  collect: [ :e | e entity ].
-	"assocAddedEntitiesTagged := removedEntites collect: [ :e | e isTagged  ]."
+	SESerialisationTagger tagAllVulnerabilitiesOf: assocAddedEntities anyOne mooseModel  .
+	assocAddedEntitiesTagged := assocAddedEntities select: [ :e | e isTagged  ].
 	
 	"SESerialisationTagger assocChanges: resultDiff assocChanges ."
 
-	"SESerialisationTagger tagAllVulnerabilitiesOf: addedEntites ."
+
+
 	
 	"addedtag := (addedEntites  tagNamed: 'added') color: 
 						 Color blue."
-	
-	
-	
-
 ]
 
 { #category : #'as yet unclassified' }
