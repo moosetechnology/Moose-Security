@@ -99,7 +99,7 @@ SEDiffModels >> entitiesTagger [
 
 	| resultDiff "removedEntites addedEntites"   "assocAdded" assocChanges |
 	resultDiff := diffModel result.
-	SESerialisationTagger assocChanges: resultDiff assocChanges .
+	SESerialisationTagger assocChanges: resultDiff associationChanges  .
 	
 	"SESerialisationTagger assocChanges: resultDiff  ."
 	
@@ -109,12 +109,12 @@ SEDiffModels >> entitiesTagger [
 	SESerialisationTagger tagAllVulnerabilitiesOf: removedEntites  anyOne mooseModel  .
 	removedEntitesTagged := removedEntites select: [ :e | e isTagged  ].
 	
-	addedEntites := resultDiff addChanges collect: [ :e | e entity ].
+	addedEntites := resultDiff additionChanges collect: [ :e | e entity ].
 	SESerialisationTagger tagAllVulnerabilitiesOf: addedEntites anyOne mooseModel  .
 	addedEntitesTagged := addedEntites select: [ :e | e isTagged  ].
 	
 	
-	assocChanges := resultDiff assocChanges allWithType: FamixAddChange.
+	assocChanges := resultDiff associationChanges allWithType: FamixAddChange.
 	assocAddedEntities := assocChanges  collect: [ :e | e entity ].
 	SESerialisationTagger tagAllVulnerabilitiesOf: assocAddedEntities anyOne mooseModel  .
 	assocAddedEntitiesTagged := assocAddedEntities select: [ :e | e isTagged  ].
