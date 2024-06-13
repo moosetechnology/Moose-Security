@@ -22,8 +22,6 @@ SEDiffModels >> baseModel: baseModel targetModel: targetModel [
 		             runOnBaseModel: baseModel
 		             targetModel: targetModel.
 
-
-"	self tagsCreation."
 	self entitiesTagger.
 ]
 
@@ -76,16 +74,12 @@ SEDiffModels >> entitiesTagger [
 	SESerialisationTagger assocChanges: resultDiff associationChanges.
 
 	removedEntites := resultDiff removals collect: [ :e | e entity ].
-	SESerialisationTagger tagAllVulnerabilitiesOf: removedEntites anyOne mooseModel.
+	SEVulnerabilityTagger tagAllVulnerabilitiesOf: removedEntites anyOne mooseModel.
 	removedEntitesTagged := removedEntites select: [ :e | e isTagged ].
 
 	addedEntites := resultDiff additions collect: [ :e | e entity ].
-	SESerialisationTagger tagAllVulnerabilitiesOf: addedEntites anyOne mooseModel.
+	SEVulnerabilityTagger tagAllVulnerabilitiesOf: addedEntites anyOne mooseModel.
 	addedEntitesTagged := addedEntites select: [ :e | e isTagged ].
 
-
-	"assocChanges := resultDiff associationChanges allWithType: FamixAddChange.
-	assocAddedEntities := assocChanges collect: [ :e | e entity ].
-	SESerialisationTagger tagAllVulnerabilitiesOf: assocAddedEntities anyOne mooseModel.
-	assocAddedEntitiesTagged := assocAddedEntities select: [ :e | e isTagged ]"
+ 	
 ]
