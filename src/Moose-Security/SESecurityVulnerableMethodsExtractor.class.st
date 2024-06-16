@@ -1,38 +1,39 @@
 Class {
-	#name : #SESecurityVulnerableMethodsExtractor,
-	#superclass : #Object,
+	#name : 'SESecurityVulnerableMethodsExtractor',
+	#superclass : 'Object',
 	#instVars : [
 		'methods',
 		'classes'
 	],
-	#category : 'Moose-Security'
+	#category : 'Moose-Security',
+	#package : 'Moose-Security'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SESecurityVulnerableMethodsExtractor >> classes [
 
 	^ classes
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SESecurityVulnerableMethodsExtractor >> classes: anObject [
 
 	classes := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SESecurityVulnerableMethodsExtractor >> methods [
 
 	^ methods
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SESecurityVulnerableMethodsExtractor >> methods: anObject [
 
 	methods := anObject
 ]
 
-{ #category : #query }
+{ #category : 'query' }
 SESecurityVulnerableMethodsExtractor >> vulnerableMethodSelector [
 	"this method is intended for looking for methods with given names in the classes of Commons-Collections 3.1"
 
