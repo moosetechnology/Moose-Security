@@ -1,45 +1,44 @@
 Class {
-	#name : 'SESecurityMethodsAnalyser',
-	#superclass : 'Object',
+	#name : #SESecurityMethodsAnalyser,
+	#superclass : #Object,
 	#instVars : [
 		'model',
 		'tags',
 		'methods'
 	],
-	#category : 'Moose-Security',
-	#package : 'Moose-Security'
+	#category : 'Moose-Security'
 }
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 SESecurityMethodsAnalyser >> methods [
 
 	^ methods
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 SESecurityMethodsAnalyser >> methods: anObject [
 
 	methods := anObject
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 SESecurityMethodsAnalyser >> model [
 
 	^ model
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 SESecurityMethodsAnalyser >> model: anObject [
 
 	model := anObject
 ]
 
-{ #category : 'query' }
+{ #category : #query }
 SESecurityMethodsAnalyser >> queryMethodsWithIncludedName: aString [
 	^ self methods select: [ :m | m name includesSubstring: aString ]
 ]
 
-{ #category : 'query' }
+{ #category : #query }
 SESecurityMethodsAnalyser >> queryMethodsWithIncludedName: aString InClass: aClassName tagWithName: aTagName [
 	| tag |
 	
@@ -47,31 +46,31 @@ SESecurityMethodsAnalyser >> queryMethodsWithIncludedName: aString InClass: aCla
 	^ self queryMethodsWithIncludedName: aString tagWith: tag.
 ]
 
-{ #category : 'query' }
+{ #category : #query }
 SESecurityMethodsAnalyser >> queryMethodsWithIncludedName: aString tagWith: aTag [
 	methods := self queryMethodsWithIncludedName: aString.
 	self tagMethods: methods with: aTag
 ]
 
-{ #category : 'query' }
+{ #category : #query }
 SESecurityMethodsAnalyser >> queryMethodsWithIncludedName: aString tagWithName: aTagName [
 	| tag |
 	tag := self model allTags detect: [ :t | t name = aTagName ] ifNone: [ self model createTagNamed: aTagName  ].
 	^ self queryMethodsWithIncludedName: aString tagWith: tag.
 ]
 
-{ #category : 'tag' }
+{ #category : #tag }
 SESecurityMethodsAnalyser >> tagMethods: aCollection with: aTag [
 	aCollection do: [ :e | e tagWith: aTag ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 SESecurityMethodsAnalyser >> tags [
 
 	^ tags
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 SESecurityMethodsAnalyser >> tags: anObject [
 
 	tags := anObject
