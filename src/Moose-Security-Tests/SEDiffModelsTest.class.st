@@ -1,13 +1,67 @@
 Class {
 	#name : #SEDiffModelsTest,
 	#superclass : #TestCase,
+	#instVars : [
+		'classFactory'
+	],
 	#category : #'Moose-Security-Tests'
 }
+
+{ #category : #'as yet unclassified' }
+SEDiffModelsTest >> generateClassFactoryMaker [
+
+
+| classMock |
+classMock := classFactory newSubclassOf: SEVulnerabilityTagger .
+
+classMock class compile: 'classImplentinginterfaceDTagger 
+<cautionTagger>
+	^self tagResultOf: [ :model :tagger | tagger classesImplementing: #InterfaceD  in: model  ]' classified: 'default taggers'.
+
+classMock class compile: 'methodCTagger 
+
+	<cautionTagger>
+	^ self tagResultOf: [ :model :tagger | tagger methodsNamed: #methodC in: model ]
+
+' classified: 'default taggers'.
+
+classMock class compile: 'tagColor 
+
+	^ (Color r: 0.70 g: 0.69 b: 0.5 alpha: 1.0)
+' classified: 'accessing'.
+
+classMock class compile: 'tagName 
+
+	^ #MockVulnerability
+' classified: 'accessing'.
+
+
+
+]
+
+{ #category : #running }
+SEDiffModelsTest >> setUp [
+	super setUp.
+	
+	classFactory:= ClassFactoryForTestCase new.
+	
+	
+]
+
+{ #category : #running }
+SEDiffModelsTest >> tearDown [ 
+
+classFactory cleanUp .
+
+ super tearDown 
+]
 
 { #category : #tests }
 SEDiffModelsTest >> testIFM1MinusM2GiveTheOppositeOFM2MinusM1 [
 
 | model1 classA methodA model2 classB methodB interfaceD classBImplementsInterfaceD methodC diffM1MinusM2 diffM2MinusM1 |
+
+self generateClassFactoryMaker .
 
 model1 := FamixJavaModel new
                    name: 'Model 1';
@@ -71,6 +125,8 @@ self assert: (diffM1MinusM2 removedEntities equalsTo: diffM2MinusM1 addedEntitie
 SEDiffModelsTest >> testWhenAClassImplentingAVulnerableInrerfaceHasAddedAndDetected [
 
 | model1 classA methodA model2 classB methodB diff interfaceD classBImplementsInterfaceD |
+
+self generateClassFactoryMaker .
 
 model1 := FamixJavaModel new
                    name: 'Model 1';
@@ -206,6 +262,8 @@ SEDiffModelsTest >> testWhenAClassImplentingAVulnerableInrerfaceHasRemovedndDete
 
 | model1 classA methodA model2 classB methodB diff interfaceD classBImplementsInterfaceD |
 
+self generateClassFactoryMaker .
+
 model1 := FamixJavaModel new
                    name: 'Model 1';
                    yourself.
@@ -317,6 +375,8 @@ SEDiffModelsTest >> testWhenOneVulnerabilityHasRemovedAndDetected [
 
 | model1 classA methodA model2 methodC classB methodB diff |
 
+self generateClassFactoryMaker .
+
 model1 := FamixJavaModel new
                    name: 'Model 1';
                    yourself.
@@ -358,6 +418,8 @@ self assert: (diff removedEntities includes: methodC).
 SEDiffModelsTest >> testWhenOneVulnerabilityMethodHasAddedAndDetected [
 
 | model1 classA methodA model2 methodC classB methodB diff |
+
+self generateClassFactoryMaker .
 
 model1 := FamixJavaModel new
                    name: 'Model 1';
