@@ -15,6 +15,18 @@ Class {
 	#category : #'Moose-Security'
 }
 
+{ #category : #accessing }
+SEDiffBetweenTwoModels >> addedEntities [
+
+^ addedEntities.
+]
+
+{ #category : #accessing }
+SEDiffBetweenTwoModels >> addedEntitiesTagged [
+
+^ addedEntitiesTagged.
+]
+
 { #category : #'instance creation' }
 SEDiffBetweenTwoModels >> baseModel: baseModel targetModel: targetModel [
 	
@@ -51,7 +63,6 @@ SEDiffBetweenTwoModels >> entitiesFilter [
 
 	removedEntitiesTagged := diffModel result removals select: [ :e|
 			e isForAssociation ifTrue: [ e entity source isTagged ]
-			
 			ifFalse: [ e entity isTagged ] ].
 		
 	removedEntities := removedEntitiesTagged collect: [ :e | 
@@ -97,4 +108,16 @@ SEDiffBetweenTwoModels >> makeCategoriesforEntities: entites [
 
 	
 	
+]
+
+{ #category : #accessing }
+SEDiffBetweenTwoModels >> removedEntities [
+
+^ removedEntities .
+]
+
+{ #category : #accessing }
+SEDiffBetweenTwoModels >> removedEntitiesTagged [
+
+^ removedEntitiesTagged .
 ]

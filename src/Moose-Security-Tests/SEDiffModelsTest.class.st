@@ -55,14 +55,14 @@ classBImplementsInterfaceD :=  model2 newImplementation
         yourself.
 
 
-diffM1MinusM2 := SEDiffModels new. 
-diffM1MinusM2 baseModel: model1  targetModel: model2.
+diffM1MinusM2 := SEDiffBetweenTwoModels new. 
+diffM1MinusM2 baseModel: model1  targetModel: model2. 
 
-diffM2MinusM1 := SEDiffModels new. 
+diffM2MinusM1 := SEDiffBetweenTwoModels new. 
 diffM2MinusM1 baseModel: model2  targetModel: model1.
 
-self assert: (diffM1MinusM2 addedEntitesTagged equalsTo: diffM2MinusM1 removedEntitesTagged ).
-self assert: (diffM1MinusM2 removedEntitesTagged equalsTo: diffM2MinusM1 addedEntitesTagged ).
+self assert: (diffM1MinusM2 addedEntities equalsTo: diffM2MinusM1 removedEntities ).
+self assert: (diffM1MinusM2 removedEntities equalsTo: diffM2MinusM1 addedEntities ).
 
 
 ]
@@ -115,10 +115,10 @@ classBImplementsInterfaceD :=  model2 newImplementation
         yourself.
 
 
-diff := SEDiffModels new. 
+diff :=  SEDiffBetweenTwoModels new. 
 diff baseModel: model1  targetModel: model2.
 
-self assert: (diff addedEntitesTagged includes: classBImplementsInterfaceD).
+self assert: (diff addedEntities includes: classBImplementsInterfaceD).
 
 
 
@@ -127,7 +127,7 @@ self assert: (diff addedEntitesTagged includes: classBImplementsInterfaceD).
 { #category : #tests }
 SEDiffModelsTest >> testWhenAClassImplentingAVulnerableInrerfaceHasInTwoVersions [
 
-| model1 classA methodA model2 classB methodB diff interfaceD classBImplementsInterfaceD classE methodE identity identityEntities identityEntitiesTagged methodC |
+"| model1 classA methodA model2 classB methodB diff interfaceD classBImplementsInterfaceD classE methodE identity identityEntities identityEntitiesTagged methodC |
 
 model1 := FamixJavaModel new
                    name: 'Model 1';
@@ -198,7 +198,7 @@ self assert: (identityEntitiesTagged includes: classBImplementsInterfaceD).
 
 
 
-
+"
 ]
 
 { #category : #tests }
@@ -257,10 +257,10 @@ interfaceD := model2 newInterface
 
 
 
-diff := SEDiffModels new. 
+diff := SEDiffBetweenTwoModels new. 
 diff baseModel: model1  targetModel: model2.
 
-self assert: (diff removedEntitesTagged includes: classBImplementsInterfaceD).
+self assert: (diff removedEntities includes: classBImplementsInterfaceD).
 
 
 
@@ -269,7 +269,7 @@ self assert: (diff removedEntitesTagged includes: classBImplementsInterfaceD).
 { #category : #tests }
 SEDiffModelsTest >> testWhenOneVulnerabilityHasInTwoVersion [
 "verifier si l on veut detecter aussi les vulnerabilites qui sont presentent dans les deux versions et non corrigées "
-| model1 classA methodA model2 methodC classB methodB diff identiy identityEntities identityEntitiesTagged |
+"| model1 classA methodA model2 methodC classB methodB diff identiy identityEntities identityEntitiesTagged |
 model1 := FamixJavaModel new
                    name: 'Model 1';
                    yourself.
@@ -309,7 +309,7 @@ identityEntitiesTagged:= identityEntities select: [ :e | e isTagged  ].
 self assert: (identityEntitiesTagged includes: methodC).
 
 
-
+"
 ]
 
 { #category : #tests }
@@ -345,10 +345,10 @@ methodA := model2 newMethodNamed: 'methodA'.
 classA addMethod: methodA .
 
 
-diff := SEDiffModels new. 
+diff := SEDiffBetweenTwoModels new. 
 diff baseModel: model1  targetModel: model2.
 
-self assert: (diff removedEntitesTagged includes: methodC).
+self assert: (diff removedEntities includes: methodC).
 
 
 
@@ -387,9 +387,9 @@ methodB := model2 newMethodNamed: 'methodB'.
 classB addMethod: methodB .
 
 
-diff := SEDiffModels new. 
+diff := SEDiffBetweenTwoModels new. 
 diff baseModel: model1  targetModel: model2.
-self assert: (diff addedEntitesTagged includes: methodC).
+self assert: (diff addedEntities includes: methodC).
 
 
 
