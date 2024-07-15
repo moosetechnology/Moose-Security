@@ -1,21 +1,16 @@
 Class {
 	#name : #SEInjectionTagger,
 	#superclass : #SEVulnerabilityTagger,
-	#category : 'Moose-Security'
+	#category : #'Moose-Security'
 }
 
 { #category : #'default taggers' }
-SEInjectionTagger class >> executeQueryTagger [
+SEInjectionTagger class >> addMethodNameTaggersTo: taggers [
 
 	<cautionTagger>
-	^ self tagResultOf: [ :model :tagger | tagger methodsNamed: #executeQuery in: model ]
-]
-
-{ #category : #'default taggers' }
-SEInjectionTagger class >> getConnectionTagger [
-
-	<cautionTagger>
-	^ self tagResultOf: [ :model :tagger | tagger methodsNamed: #getConnection in: model ]
+	#( #executeQuery #getConnection ) do: [ :methodName |
+		taggers add: (self tagResultOf: [ :model :tagger |
+				 tagger methodsNamed: methodName in: model ]) ]
 ]
 
 { #category : #accessing }

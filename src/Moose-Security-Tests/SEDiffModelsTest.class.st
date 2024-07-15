@@ -14,14 +14,14 @@ SEDiffModelsTest >> generateClassFactoryMaker [
 | classMock |
 classMock := classFactory newSubclassOf: SEVulnerabilityTagger .
 
-classMock class compile: 'classImplentinginterfaceDTagger 
+classMock class compile: 'classImplentinginterfaceDTaggerIn: taggers
 <cautionTagger>
-	^self tagResultOf: [ :model :tagger | tagger classesImplementing: #InterfaceD  in: model  ]' classified: 'default taggers'.
+	taggers add: (self tagResultOf: [ :model :tagger | tagger classesImplementing: #InterfaceD  in: model  ])' classified: 'default taggers'.
 
-classMock class compile: 'methodCTagger 
+classMock class compile: 'methodCTaggerIn: taggers
 
 	<cautionTagger>
-	^ self tagResultOf: [ :model :tagger | tagger methodsNamed: #methodC in: model ]
+	taggers add: (self tagResultOf: [ :model :tagger | tagger methodsNamed: #methodC in: model ])
 
 ' classified: 'default taggers'.
 

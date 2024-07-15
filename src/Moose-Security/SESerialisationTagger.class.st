@@ -5,81 +5,23 @@ Class {
 }
 
 { #category : #'default taggers' }
-SESerialisationTagger class >> execTagger [
+SESerialisationTagger class >> addClassesImplementingInterfaceTaggersTo: taggers [
 
 	<cautionTagger>
-	^ self tagResultOf: [ :model :tagger | tagger methodsNamed: #exec in: model ]
+	#( #Map #Serializable #Transformer ) do: [ :interfaceName |
+		taggers add: (self tagResultOf: [ :model :tagger |
+				 tagger classesImplementing: interfaceName in: model ]) ]
 ]
 
 { #category : #'default taggers' }
-SESerialisationTagger class >> getOutputPropertiesTagger [
+SESerialisationTagger class >> addMethodNameTaggersTo: taggers [
 
 	<cautionTagger>
-	^ self tagResultOf: [ :model :tagger | tagger methodsNamed: #getOutputProperties in: model ]
-]
-
-{ #category : #'default taggers' }
-SESerialisationTagger class >> getTransletInstanceTagger [
-
-	<cautionTagger>
-	^ self tagResultOf: [ :model :tagger | tagger methodsNamed: #getTransletInstance in: model ]
-]
-
-{ #category : #'default taggers' }
-SESerialisationTagger class >> mapClassTagger [
-
-	<cautionTagger>
-	^ self tagResultOf: [ :model :tagger | tagger classesImplementing: #Map in: model ]
-]
-
-{ #category : #'default taggers' }
-SESerialisationTagger class >> newOutputStreamTagger [
-	"This method is located in the Files class."
-
-	<cautionTagger>
-	^ self tagResultOf: [ :model :tagger | tagger methodsNamed: #newOutputStream in: model ]
-]
-
-{ #category : #'default taggers' }
-SESerialisationTagger class >> newTransformerTagger [
-
-	<cautionTagger>
-	^ self tagResultOf: [ :model :tagger | tagger methodsNamed: #newTransformer in: model ]
-]
-
-{ #category : #'default taggers' }
-SESerialisationTagger class >> readAllBytesTagger [
-
-	<cautionTagger>
-	^ self tagResultOf: [ :model :tagger | tagger methodsNamed: #readAllBytes in: model ]
-]
-
-{ #category : #'default taggers' }
-SESerialisationTagger class >> readExternalTagger [
-
-	<cautionTagger>
-	^ self tagResultOf: [ :model :tagger | tagger methodsNamed: #readExternal in: model ]
-]
-
-{ #category : #'default taggers' }
-SESerialisationTagger class >> readLineTagger [
-
-	<cautionTagger>
-	^ self tagResultOf: [ :model :tagger | tagger methodsNamed: #readLine in: model ]
-]
-
-{ #category : #'default taggers' }
-SESerialisationTagger class >> readObjectTagger [
-
-	<cautionTagger>
-	^ self tagResultOf: [ :model :tagger | tagger methodsNamed: #readObject in: model ]
-]
-
-{ #category : #'default taggers' }
-SESerialisationTagger class >> serializableClassTagger [
-
-	<cautionTagger>
-	^ self tagResultOf: [ :model :tagger | tagger classesImplementing: #Serializable in: model ]
+	#( #exec #getOutputProperties #getTransletInstance
+	   #newOutputStream #newTransformer #readAllBytes #readExternal
+	   #readLine #readObject #transform ) do: [ :methodName |
+		taggers add: (self tagResultOf: [ :model :tagger |
+				 tagger methodsNamed: methodName in: model ]) ]
 ]
 
 { #category : #accessing }
@@ -93,18 +35,4 @@ SESerialisationTagger class >> tagColor [
 SESerialisationTagger class >> tagName [
 
 	^ #Serialisation
-]
-
-{ #category : #'default taggers' }
-SESerialisationTagger class >> transformTagger [
-
-	<cautionTagger>
-	^ self tagResultOf: [ :model :tagger | tagger methodsNamed: #transform in: model ]
-]
-
-{ #category : #'default taggers' }
-SESerialisationTagger class >> transformerClassTagger [
-
-	<cautionTagger>
-	^ self tagResultOf: [ :model :tagger | tagger classesImplementing: #Transformer in: model ]
 ]
