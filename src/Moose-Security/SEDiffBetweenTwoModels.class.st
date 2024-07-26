@@ -5,11 +5,7 @@ Class {
 		'diffModel',
 		'removedEntities',
 		'addedEntities',
-		'vulnerableEntities',
 		'removedEntitiesTagged',
-		'removedEntitiesTaggedAssociation',
-		'entitiesTagged',
-		'res',
 		'addedEntitiesTagged'
 	],
 	#category : #'Moose-Security'
@@ -41,7 +37,7 @@ SEDiffBetweenTwoModels >> baseModel: baseModel targetModel: targetModel [
 	self entitiesFilter.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #display }
 SEDiffBetweenTwoModels >> displayEntities [
 	
 	 | browser |
@@ -58,33 +54,41 @@ SEDiffBetweenTwoModels >> displayEntities [
 	browser window title: browser window title , ' [ Added vulnerable entities]'.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #filtering }
 SEDiffBetweenTwoModels >> entitiesFilter [
 
-	removedEntitiesTagged := diffModel result removals select: [ :e|
-			e isForAssociation ifTrue: [ e entity source isTagged ]
-			ifFalse: [ e entity isTagged ] ].
-		
-	removedEntities := removedEntitiesTagged collect: [ :e | 
-				e entity] .
-			
-			
-	addedEntitiesTagged := diffModel result additions select: [ :e|
-			e isForAssociation ifTrue: [ e entity source isTagged ]
-			ifFalse: [ e entity isTagged ] ].
-		
-	addedEntities := addedEntitiesTagged collect: [ :e | 
-				e entity ].
-	
-	self makeCategoriesforEntities: addedEntities .
-	self makeCategoriesforEntities: removedEntities .
-	
-	self displayEntities.
+	removedEntitiesTagged := diffModel result removals select: [ :e |
+		                         e isForAssociation
+			                         ifTrue: [
+				                         e entity isInvocation
+					                         ifTrue: [ e entity source isTagged ]
+					                         ifFalse: [
+					                         e entity source isTagged or:
+						                         e entity target isTagged ] ]
+			                         ifFalse: [ e entity isTagged ] ].
+
+	removedEntities := removedEntitiesTagged collect: [ :e | e entity ].
 
 
+	addedEntitiesTagged := diffModel result additions select: [ :e |
+		                       e isForAssociation
+			                        ifTrue: [
+				                         e entity isInvocation
+					                         ifTrue: [ e entity source isTagged ]
+					                         ifFalse: [
+					                         e entity source isTagged or:
+						                         e entity target isTagged ] ]
+			                         ifFalse: [ e entity isTagged ] ].
+
+	addedEntities := addedEntitiesTagged collect: [ :e | e entity ].
+
+	self makeCategoriesforEntities: addedEntities.
+	self makeCategoriesforEntities: removedEntities.
+
+	self displayEntities
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 SEDiffBetweenTwoModels >> makeCategoriesforEntities: entites [
 
 	

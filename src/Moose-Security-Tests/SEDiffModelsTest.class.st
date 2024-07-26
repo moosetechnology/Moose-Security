@@ -14,7 +14,7 @@ SEDiffModelsTest >> generateClassFactoryMaker [
 | classMock |
 classMock := classFactory newSubclassOf: SEVulnerabilityTagger .
 
-classMock class compile: 'classImplentinginterfaceDTaggerIn: taggers
+classMock class compile: 'classImplentingInterfaceDTaggerIn: taggers
 <cautionTagger>
 	taggers add: (self tagResultOf: [ :model :tagger | tagger classesImplementing: #InterfaceD  in: model  ])' classified: 'default taggers'.
 
@@ -182,8 +182,9 @@ self assert: (diff addedEntities includes: classBImplementsInterfaceD).
 
 { #category : #tests }
 SEDiffModelsTest >> testWhenAClassImplentingAVulnerableInrerfaceHasInTwoVersions [
-
-"| model1 classA methodA model2 classB methodB diff interfaceD classBImplementsInterfaceD classE methodE identity identityEntities identityEntitiesTagged methodC |
+ "This test depends on what categories we want when we make the diff. In particular, this test must have entities that were identical between versions. If we want this test, we should create a new category (new instance like addedEntities) in SEDiffBetweenTwoModels for collecting identical entities. "
+	
+	"| model1 classA methodA model2 classB methodB diff interfaceD classBImplementsInterfaceD classE methodE identity identityEntities identityEntitiesTagged methodC |
 
 model1 := FamixJavaModel new
                    name: 'Model 1';
@@ -255,6 +256,8 @@ self assert: (identityEntitiesTagged includes: classBImplementsInterfaceD).
 
 
 "
+
+	
 ]
 
 { #category : #tests }
@@ -325,49 +328,227 @@ self assert: (diff removedEntities includes: classBImplementsInterfaceD).
 ]
 
 { #category : #tests }
-SEDiffModelsTest >> testWhenOneVulnerabilityHasInTwoVersion [
-"verifier si l on veut detecter aussi les vulnerabilites qui sont presentent dans les deux versions et non corrigées "
-"| model1 classA methodA model2 methodC classB methodB diff identiy identityEntities identityEntitiesTagged |
-model1 := FamixJavaModel new
-                   name: 'Model 1';
-                   yourself.
-
+SEDiffModelsTest >> testWhenAClassInheritAVulnerableClassAndHasAddedAndDetected [
 	
-classA := model1 newClassNamed: 'ClassA'.
-methodA := model1 newMethodNamed: 'methodA'.
-methodC := model1 newMethodNamed: 'methodC'.
-classA addMethod: methodA .
-classA addMethod: methodC .
+
+	| model1 classA methodA model2 classB methodB classC methodC classAInheritsClassC diff |
+	self generateClassFactoryMaker.
+
+	model1 := FamixJavaModel new
+		          name: 'Model 1';
+		          yourself.
 
 
-model2 := FamixJavaModel new
-                   name: 'Model 2';
-                   yourself.
+	classA := model1 newClassNamed: 'ClassA'.
+	methodA := model1 newMethodNamed: 'methodA'.
+	classA addMethod: methodA.
 
-	
-classA := model2 newClassNamed: 'ClassA'.
-   
-methodA := model2 newMethodNamed: 'methodA'.
-methodC := model2 newMethodNamed: 'methodC'.
-classA addMethod: methodA .
-classA addMethod: methodC .
-	
-classB := model2 newClassNamed: 'ClassB'.
-   
-methodB := model2 newMethodNamed: 'methodB'.
-classB addMethod: methodB .
+	classB := model1 newClassNamed: 'ClassB'.
+	methodB := model1 newMethodNamed: 'methodB'.
+	classB addMethod: methodB.
 
 
-diff := SEDiffModels new. 
-diff baseModel: model1  targetModel: model2.
-
-identiy:= diff diffModel result select: [:f | f isUnchanged ] .
-identityEntities := identiy collect: [ :e | e entity ].
-identityEntitiesTagged:= identityEntities select: [ :e | e isTagged  ].
-self assert: (identityEntitiesTagged includes: methodC).
+	model2 := FamixJavaModel new
+		          name: 'Model 2';
+		          yourself.
 
 
-"
+	classA := model2 newClassNamed: 'ClassA'.
+
+	methodA := model2 newMethodNamed: 'methodA'.
+	classA addMethod: methodA.
+
+	classB := model2 newClassNamed: 'ClassB'.
+	methodB := model2 newMethodNamed: 'methodB'.
+	classB addMethod: methodB.
+
+	classC := model2 newClassNamed: 'ClassC'.
+	methodC := model2 newMethodNamed: 'methodC'.
+	classC addMethod: methodC.
+
+
+	classAInheritsClassC := model2 newInheritance
+		                        subclass: classA;
+		                        superclass: classC;
+		                        yourself.
+
+
+	diff := SEDiffBetweenTwoModels new.
+	diff baseModel: model1 targetModel: model2.
+	self assert: (diff addedEntities includes: methodC).
+	self assert: (classA allHierarchyMethods includes: methodC)
+]
+
+{ #category : #tests }
+SEDiffModelsTest >> testWhenAClassInheritAVulnerableClassAndHasRemovedAndDetected [
+
+
+	| model1 classA methodA model2 classB methodB classC methodC classAInheritsClassC diff |
+	self generateClassFactoryMaker.
+
+	model1 := FamixJavaModel new
+		          name: 'Model 1';
+		          yourself.
+
+
+	classA := model1 newClassNamed: 'ClassA'.
+	methodA := model1 newMethodNamed: 'methodA'.
+	classA addMethod: methodA.
+
+	classB := model1 newClassNamed: 'ClassB'.
+	methodB := model1 newMethodNamed: 'methodB'.
+	classB addMethod: methodB.
+
+
+	classC := model1 newClassNamed: 'ClassC'.
+	methodC := model1 newMethodNamed: 'methodC'.
+	classC addMethod: methodC.
+
+
+	classAInheritsClassC := model1 newInheritance
+		                        subclass: classA;
+		                        superclass: classC;
+		                        yourself.
+
+	self assert: (classA allHierarchyMethods includes: methodC).
+
+	model2 := FamixJavaModel new
+		          name: 'Model 2';
+		          yourself.
+
+
+	classA := model2 newClassNamed: 'ClassA'.
+
+	methodA := model2 newMethodNamed: 'methodA'.
+	classA addMethod: methodA.
+
+	classB := model2 newClassNamed: 'ClassB'.
+	methodB := model2 newMethodNamed: 'methodB'.
+	classB addMethod: methodB.
+
+	classC := model2 newClassNamed: 'ClassC'.
+	methodC := model2 newMethodNamed: 'methodC'.
+	classC addMethod: methodC.
+
+
+
+	diff := SEDiffBetweenTwoModels new.
+	diff baseModel: model1 targetModel: model2.
+	self assert: (classA allHierarchyMethods includes: methodC) not
+]
+
+{ #category : #tests }
+SEDiffModelsTest >> testWhenAClassInheritAvulnerableAbstractClassAndHAsAddedAndDetected [
+
+	| model1 classA methodA model2 classB methodB classC methodC classAInheritsClassC diff |
+	self generateClassFactoryMaker.
+
+	model1 := FamixJavaModel new
+		          name: 'Model 1';
+		          yourself.
+
+
+	classA := model1 newClassNamed: 'ClassA'.
+	methodA := model1 newMethodNamed: 'methodA'.
+	classA addMethod: methodA.
+
+	classB := model1 newClassNamed: 'ClassB'.
+	methodB := model1 newMethodNamed: 'methodB'.
+	classB addMethod: methodB.
+
+	classC := model1 newClassNamed: 'ClassC'.
+	methodC := model1 newMethodNamed: 'methodC'.
+	classC isAbstract: true.
+	classC addMethod: methodC.
+
+
+	model2 := FamixJavaModel new
+		          name: 'Model 2';
+		          yourself.
+
+
+	classA := model2 newClassNamed: 'ClassA'.
+
+	methodA := model2 newMethodNamed: 'methodA'.
+	classA addMethod: methodA.
+
+	classB := model2 newClassNamed: 'ClassB'.
+	methodB := model2 newMethodNamed: 'methodB'.
+	classB addMethod: methodB.
+
+	classC := model2 newClassNamed: 'ClassC'.
+	methodC := model2 newMethodNamed: 'methodC'.
+	classC isAbstract: true.
+	classC addMethod: methodC.
+
+
+	classAInheritsClassC := model2 newInheritance
+		                        subclass: classA;
+		                        superclass: classC;
+		                        yourself.
+
+
+	diff := SEDiffBetweenTwoModels new.
+	diff baseModel: model1 targetModel: model2.
+	self assert: (classA allHierarchyMethods includes: methodC)
+]
+
+{ #category : #tests }
+SEDiffModelsTest >> testWhenAClassInheritAvulnerableAbstractClassAndHAsRemovedAndDetected [
+
+
+	| model1 classA methodA model2 classB methodB classC methodC classAInheritsClassC diff |
+	self generateClassFactoryMaker.
+
+	model1 := FamixJavaModel new
+		          name: 'Model 1';
+		          yourself.
+
+
+	classA := model1 newClassNamed: 'ClassA'.
+	methodA := model1 newMethodNamed: 'methodA'.
+	classA addMethod: methodA.
+
+	classB := model1 newClassNamed: 'ClassB'.
+	methodB := model1 newMethodNamed: 'methodB'.
+	classB addMethod: methodB.
+
+
+	classC := model1 newClassNamed: 'ClassC'.
+	methodC := model1 newMethodNamed: 'methodC'.
+	classC isAbstract: true.
+	classC addMethod: methodC.
+
+
+	classAInheritsClassC := model1 newInheritance
+		                        subclass: classA;
+		                        superclass: classC;
+		                        yourself.
+
+
+	model2 := FamixJavaModel new
+		          name: 'Model 2';
+		          yourself.
+
+
+	classA := model2 newClassNamed: 'ClassA'.
+
+	methodA := model2 newMethodNamed: 'methodA'.
+	classA addMethod: methodA.
+
+	classB := model2 newClassNamed: 'ClassB'.
+	methodB := model2 newMethodNamed: 'methodB'.
+	classB addMethod: methodB.
+
+	classC := model2 newClassNamed: 'ClassC'.
+	methodC := model2 newMethodNamed: 'methodC'.
+	classC addMethod: methodC.
+
+
+
+	diff := SEDiffBetweenTwoModels new.
+	diff baseModel: model1 targetModel: model2.
+	self assert: (classA allHierarchyMethods includes: methodC) not
 ]
 
 { #category : #tests }
@@ -455,4 +636,53 @@ self assert: (diff addedEntities includes: methodC).
 
 
 
+]
+
+{ #category : #tests }
+SEDiffModelsTest >> testWhenOneVulnerabilityMethodHasInTwoVersion [
+	"This test depends on what categories we want when we make the diff. In particular, this test must have entities that were identical between versions. If we want this test, we should create a new category (new instance like addedEntities) in SEDiffBetweenTwoModels for collecting identical entities."
+
+	"| model1 classA methodA model2 methodC classB methodB diff identiy identityEntities identityEntitiesTagged |
+model1 := FamixJavaModel new
+                   name: 'Model 1';
+                   yourself.
+
+	
+classA := model1 newClassNamed: 'ClassA'.
+methodA := model1 newMethodNamed: 'methodA'.
+methodC := model1 newMethodNamed: 'methodC'.
+classA addMethod: methodA .
+classA addMethod: methodC .
+
+
+model2 := FamixJavaModel new
+                   name: 'Model 2';
+                   yourself.
+
+	
+classA := model2 newClassNamed: 'ClassA'.
+   
+methodA := model2 newMethodNamed: 'methodA'.
+methodC := model2 newMethodNamed: 'methodC'.
+classA addMethod: methodA .
+classA addMethod: methodC .
+	
+classB := model2 newClassNamed: 'ClassB'.
+   
+methodB := model2 newMethodNamed: 'methodB'.
+classB addMethod: methodB .
+
+
+diff := SEDiffModels new. 
+diff baseModel: model1  targetModel: model2.
+
+identiy:= diff diffModel result select: [:f | f isUnchanged ] .
+identityEntities := identiy collect: [ :e | e entity ].
+identityEntitiesTagged:= identityEntities select: [ :e | e isTagged  ].
+self assert: (identityEntitiesTagged includes: methodC).
+
+
+"
+
+	
 ]
