@@ -1,10 +1,11 @@
 Class {
-	#name : #SEDiffModelsBuilder,
-	#superclass : #Object,
-	#category : 'Moose-Security'
+	#name : 'SEDiffModelsBuilder',
+	#superclass : 'Object',
+	#category : 'Moose-Security',
+	#package : 'Moose-Security'
 }
 
-{ #category : #'accessing - name' }
+{ #category : 'accessing - name' }
 SEDiffModelsBuilder >> captureTaggedEntitiesMooseNamesOf: aModel [
 
 	| taggedElementOfFirstModel taggedEntitiesNameFirstModel |
@@ -15,7 +16,7 @@ SEDiffModelsBuilder >> captureTaggedEntitiesMooseNamesOf: aModel [
 	^ taggedEntitiesNameFirstModel
 ]
 
-{ #category : #'private-cleaning' }
+{ #category : 'private-cleaning' }
 SEDiffModelsBuilder >> cleanBeforeDiffOf: aFirstModel and: aSecondModel [
 
 	{
@@ -24,7 +25,7 @@ SEDiffModelsBuilder >> cleanBeforeDiffOf: aFirstModel and: aSecondModel [
 		SEVulnerabilityTagger removeAllGeneratedTagsOf: model ]
 ]
 
-{ #category : #tagging }
+{ #category : 'tagging' }
 SEDiffModelsBuilder >> collectTaggedElementsOf: aModel [
 
 	| taggedEntitiesOfAModel |
@@ -33,7 +34,7 @@ SEDiffModelsBuilder >> collectTaggedElementsOf: aModel [
 	^ taggedEntitiesOfAModel
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 SEDiffModelsBuilder >> generateTheDiffBetween: aFirstModel and: aSecondModel [
 	"First step: tag entities of the two models"
 
@@ -70,7 +71,7 @@ SEDiffModelsBuilder >> generateTheDiffBetween: aFirstModel and: aSecondModel [
 	SEVulnerabilityTagger tagAndVisualizeTags: aSecondModel
 ]
 
-{ #category : #tagging }
+{ #category : 'tagging' }
 SEDiffModelsBuilder >> generatesTagsFor: aFirstModel and: aSecondModel [
 
 	{
@@ -79,7 +80,7 @@ SEDiffModelsBuilder >> generatesTagsFor: aFirstModel and: aSecondModel [
 		SEVulnerabilityTagger tagAndVisualizeTags: model ]
 ]
 
-{ #category : #comparing }
+{ #category : 'comparing' }
 SEDiffModelsBuilder >> old_calculateTheDiffBetween: aFirstModel and: aSecondModel [
 	"This method supposes that a step of cleaning of the existing tags is performed for the two models in parameter"
 

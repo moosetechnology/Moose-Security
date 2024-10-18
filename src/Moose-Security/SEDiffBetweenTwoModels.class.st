@@ -1,6 +1,6 @@
 Class {
-	#name : #SEDiffBetweenTwoModels,
-	#superclass : #Object,
+	#name : 'SEDiffBetweenTwoModels',
+	#superclass : 'Object',
 	#instVars : [
 		'diffModel',
 		'removedEntities',
@@ -8,22 +8,23 @@ Class {
 		'removedEntitiesTagged',
 		'addedEntitiesTagged'
 	],
-	#category : #'Moose-Security'
+	#category : 'Moose-Security',
+	#package : 'Moose-Security'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SEDiffBetweenTwoModels >> addedEntities [
 
 ^ addedEntities.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SEDiffBetweenTwoModels >> addedEntitiesTagged [
 
 ^ addedEntitiesTagged.
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 SEDiffBetweenTwoModels >> baseModel: baseModel targetModel: targetModel [
 	
 	SEVulnerabilityTagger tagAllVulnerabilitiesOf: baseModel .
@@ -37,7 +38,7 @@ SEDiffBetweenTwoModels >> baseModel: baseModel targetModel: targetModel [
 	self entitiesFilter.
 ]
 
-{ #category : #display }
+{ #category : 'display' }
 SEDiffBetweenTwoModels >> displayEntities [
 	
 	 | browser |
@@ -54,7 +55,7 @@ SEDiffBetweenTwoModels >> displayEntities [
 	browser window title: browser window title , ' [ Added vulnerable entities]'.
 ]
 
-{ #category : #filtering }
+{ #category : 'filtering' }
 SEDiffBetweenTwoModels >> entitiesFilter [
 
 	removedEntitiesTagged := diffModel result removals select: [ :e |
@@ -88,7 +89,7 @@ SEDiffBetweenTwoModels >> entitiesFilter [
 	self displayEntities
 ]
 
-{ #category : #action }
+{ #category : 'action' }
 SEDiffBetweenTwoModels >> makeCategoriesforEntities: entites [
 
 	
@@ -114,13 +115,13 @@ SEDiffBetweenTwoModels >> makeCategoriesforEntities: entites [
 	
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SEDiffBetweenTwoModels >> removedEntities [
 
 ^ removedEntities .
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SEDiffBetweenTwoModels >> removedEntitiesTagged [
 
 ^ removedEntitiesTagged .

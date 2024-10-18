@@ -1,6 +1,6 @@
 Class {
-	#name : #SEDiffModels,
-	#superclass : #Object,
+	#name : 'SEDiffModels',
+	#superclass : 'Object',
 	#instVars : [
 		'addedtag',
 		'removedTag',
@@ -13,16 +13,17 @@ Class {
 		'addedEntitesTagged',
 		'assocAddedEntitiesTagged'
 	],
-	#category : #'Moose-Security'
+	#category : 'Moose-Security',
+	#package : 'Moose-Security'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SEDiffModels >> addedEntitesTagged [
 
 ^ addedEntitesTagged
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 SEDiffModels >> baseModel: baseModel targetModel: targetModel [
 	diffModel := FXDiff
 		             runOnBaseModel: baseModel
@@ -31,31 +32,31 @@ SEDiffModels >> baseModel: baseModel targetModel: targetModel [
 	self entitiesTagger.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SEDiffModels >> diffModel [
 
 	^ diffModel
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SEDiffModels >> diffModel: anObject [
 
 	diffModel := anObject
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 SEDiffModels >> display [
 	self displayDiff: diffModel result
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 SEDiffModels >> displayBaseModel: baseModel targetModel: targetModel [
 	
 	self baseModel:  baseModel targetModel: targetModel.
 	self display
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 SEDiffModels >> displayDiff: resultDiff [
 
 	| browser |
@@ -72,7 +73,7 @@ SEDiffModels >> displayDiff: resultDiff [
 	browser window title: browser window title , ' [ diff remove]'.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 SEDiffModels >> entitiesTagger [
 
 	| resultDiff |
@@ -92,7 +93,7 @@ SEDiffModels >> entitiesTagger [
  	
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SEDiffModels >> removedEntitesTagged [
 
 ^ removedEntitesTagged
