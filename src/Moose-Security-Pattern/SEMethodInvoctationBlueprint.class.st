@@ -7,6 +7,7 @@ Class {
 	#instVars : [
 		'modelMethodName',
 		'methodParentTypes',
+		'possibleParentTypes',
 		'model'
 	],
 	#category : 'Moose-Security-Pattern',
@@ -16,13 +17,23 @@ Class {
 { #category : 'adding' }
 SEMethodInvoctationBlueprint >> addMethodParentType: aString [
 
-	methodParentTypes add: aString
+	methodParentTypes add: aString.
+	possibleParentTypes := nil.
 ]
 
 { #category : 'adding' }
 SEMethodInvoctationBlueprint >> addMethodParentTypes: aCollection [
 
 	aCollection do: [:type | self addMethodParentType: type].
+]
+
+{ #category : 'actions' }
+SEMethodInvoctationBlueprint >> calculatePossibleParentTypes [
+
+	possibleParentTypes := Set new.
+
+	(model allClassesAndInterfacesNamedIn: methodParentTypes)
+		do: [ :parent | possibleParentTypes addAll: (self getAllPossibleTypesFor: parent)].
 ]
 
 { #category : 'actions' }
@@ -35,58 +46,93 @@ SEMethodInvoctationBlueprint >> calling: aSEMethodBlueprint [
 ]
 
 { #category : 'detection' }
-SEMethodInvoctationBlueprint >> getAllSpecializedMethodsForClass: aClass [
+SEMethodInvoctationBlueprint >> firstParentHavingTheMethodOfClass: aClass [
+
+	| result |
+	result := OrderedCollection new.
+
+	(aClass hasAnImplemetedMethodNamed: modelMethodName) ifTrue: [ ^ { aClass } ].
+	"doing this first to make sure the class is studied before interfaces (due to java prioritizing classes implementations of methods)"
+	aClass superclass ifNotNil: [ :superclass |
+		(self firstParentHavingTheMethodOfClass: superclass) ifNotEmpty: [ :res | ^ res ] ].
+	aClass interfaceImplementations do: [ :interface |
+		result addAll: (self firstParentHavingTheMethodOfInterface: interface interface) ].
+	^ result
+]
+
+{ #category : 'detection' }
+SEMethodInvoctationBlueprint >> firstParentHavingTheMethodOfInterface: anInterface [
+
+	| result |
+	result := OrderedCollection new.
+
+	(anInterface hasAnImplemetedMethodNamed: modelMethodName) ifTrue: [ ^ { anInterface } ].
+	anInterface superclass ifNotNil: [ :superclass |
+		result addAll: (self firstParentHavingTheMethodOfInterface: superclass) ].
+	^ result
+]
+
+{ #category : 'detection' }
+SEMethodInvoctationBlueprint >> getAllPossibleTypesFor: anObject [
+
+	^ (anObject isClass
+		   ifTrue: [ self getAllPossibleTypesForClass: anObject ]
+		   ifFalse: [ self getAllPossibleTypesForInterface: anObject ]) asSet
+]
+
+{ #category : 'detection' }
+SEMethodInvoctationBlueprint >> getAllPossibleTypesForClass: aClass [
 
 	| res |
-	res := Set new.
-	(self isSearched: aClass) ifTrue: [ res add: (aClass methodNamed: modelMethodName) ].
+	res := (self firstParentHavingTheMethodOfClass: aClass) asSet.
 
-	aClass subInheritances do: [ :entity | res addAll: (self getAllSpecializedMethodsForClass: entity subclass) ].
+	aClass subInheritances do: [ :entity |
+		res addAll: (self getAllPossibleTypesForClass: entity subclass) ].
 	^ res
 ]
 
 { #category : 'detection' }
-SEMethodInvoctationBlueprint >> getAllSpecializedMethodsForInterface: anInterface [
+SEMethodInvoctationBlueprint >> getAllPossibleTypesForInterface: anInterface [
 
-	| res implementingClass subclass|
-	res := Set new.
-	(self isSearched: anInterface) ifTrue: [ res add: (anInterface methodNamed: modelMethodName) ].
+	| res |
+	res := (self firstParentHavingTheMethodOfInterface: anInterface) asSet.
+
+	anInterface implementations do: [ :entity |
+		res addAll: (self getAllPossibleTypesForClass: entity implementingClass) ].
+	anInterface subInheritances do: [ :entity |
+		res addAll: (self getAllPossibleTypesForInterface: entity subclass) ].
+
+	^ res
+]
+
+{ #category : 'detection' }
+SEMethodInvoctationBlueprint >> getFirstPatternMethods [
+
+	| methodSet  |
+	methodSet := model allMethodsNamed: self modelMethodName.
 	
-	(anInterface implementations ) do: [ :entity |
-		implementingClass := entity implementingClass.
-		implementingClass isInterface ifTrue: [ res addAll: (self getAllSpecializedMethodsForInterface: implementingClass) ].
-		implementingClass isClass ifTrue: [ res addAll: (self getAllSpecializedMethodsForClass: implementingClass) ] ].
-	
-	(anInterface subInheritances ) do: [ :entity |
-		subclass := entity subclass.
-		subclass isInterface ifTrue: [ res addAll: (self getAllSpecializedMethodsForInterface: subclass) ].
-		subclass isClass ifTrue: [ res addAll: (self getAllSpecializedMethodsForClass: subclass) ] ].
-	^
-	 res
+	^ methodSet select: [ :method | self isSearched: method parentType]
 ]
 
 { #category : 'detection' }
 SEMethodInvoctationBlueprint >> getMethodsAfter: aMethod [
 
 	| methodSet |
-	
-	methodSet := ((aMethod query outgoing objects dependenciesOfType: FamixTInvocation) select: [ :method | method name = self modelMethodName ])
-		             asSet.
+	methodSet := ((aMethod query outgoing objects dependenciesOfType: FamixTInvocation) select: [
+		              :method | method name = self modelMethodName ]) asSet.
 	^ self getNextStepOfPattern: methodSet
 ]
 
 { #category : 'detection' }
 SEMethodInvoctationBlueprint >> getNextStepOfPattern: methodCollection [
 
-	| res parent |
+	| res |
 	res := Set new.
-	
-	methodCollection do: [ :method |
-		parent := method parentType.
-		parent isInterface ifTrue: [ res addAll: (self getAllSpecializedMethodsForInterface: parent) ].
-		parent isClass ifTrue: [ res addAll: (self getAllSpecializedMethodsForClass: parent) ].
-		(self methodParentTypes includes: parent name) ifTrue: [ res add: method ] ].
+
+	methodCollection do: [ :method | res addAll: (self getAllPossibleTypesFor: method parentType) ].
 	^ res
+		  select: [ :entity | self isSearched: entity ]
+		  thenCollect: [ :entity | entity methodNamed: modelMethodName ]
 ]
 
 { #category : 'initialization' }
@@ -98,13 +144,23 @@ SEMethodInvoctationBlueprint >> initialize [
 { #category : 'detection' }
 SEMethodInvoctationBlueprint >> isSearched: aClass [
 
-	^ self methodParentTypes isEmpty or: [ self methodParentTypes includes: aClass name ]
+	^ self methodParentTypes isEmpty or: [ self possibleParentTypes includes: aClass ]
 ]
 
 { #category : 'getter' }
 SEMethodInvoctationBlueprint >> methodParentTypes [
 
 	^ methodParentTypes
+]
+
+{ #category : 'getter' }
+SEMethodInvoctationBlueprint >> model [
+	^ model
+]
+
+{ #category : 'getter' }
+SEMethodInvoctationBlueprint >> model: aModel [
+	model := aModel
 ]
 
 { #category : 'getter' }
@@ -120,11 +176,8 @@ SEMethodInvoctationBlueprint >> modelMethodName: aString [
 ]
 
 { #category : 'getter' }
-SEMethodInvoctationBlueprint >> possibleClassesOn: aModel [
-
-	"
-		si interface : recherche recursivement dans les implemeteur et dans les interfaces qui herite + les classes qui l'utilisent et leurs sous classes de maniere recursives
-		si classe : recherche dans les sous classes recursives"
+SEMethodInvoctationBlueprint >> possibleParentTypes [
 	
-	self flag: #todo. "research all possibles types for every add, and add it to possibleParentTypes"
+	possibleParentTypes ifNil:[ self calculatePossibleParentTypes ].
+	^ possibleParentTypes
 ]
