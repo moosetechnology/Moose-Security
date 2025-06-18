@@ -315,7 +315,7 @@ SerializationPatternTest >> testFindingSimpleInheritanceForClasses [
 
 	model newInheritance superclass: superclass; subclass: subclass.
 
-	patterns := (SEPatternBlueprint new addMethodBlueprint: (#method methodIn: { #superclass . #subclass })) applyOn: model.
+	patterns := (SEPatternBlueprint new addMethodBlueprint: (#method methodIn: { #superclass })) applyOn: model.
 
 	patterns := patterns collect: [:a | a patternEntities first ] .
 
@@ -353,6 +353,8 @@ SerializationPatternTest >> testFindingSimpleInheritanceForParametricClasses1 [
 
 	| patterns model superclass supermethod subclass submethod |
 	model := FamixJavaModel new name: 'model'.
+	
+	self flag:#todo. "the parametric class do not have arguments, should it have at leat one to make the concretization?"
 
 	superclass := model newParametricClass.
 	superclass name: 'superclass'.
@@ -548,9 +550,9 @@ SerializationPatternTest >> testShouldNotFindAbstractMethodInInterfaceIfNotDefin
 ]
 
 { #category : 'running' }
-SerializationPatternTest >> testShouldNotFindMethodInSuperClassOfAnImplementationIfDefined [
+SerializationPatternTest >> testShouldNotFindMethodInSuperClassIfDefined [
 
-	| patterns model classA methodA classB methodB interface|
+	| patterns model classA methodA classB methodB|
 	model := FamixJavaModel new name: 'model'.
 
 	classA := model newClassNamed: 'classA'.
@@ -560,14 +562,10 @@ SerializationPatternTest >> testShouldNotFindMethodInSuperClassOfAnImplementatio
 	classB := model newClassNamed: 'classB'.
 	methodB := model newMethodNamed: 'method'.
 	classB addMethod: methodB.
-	
-	interface := model newInterface.
-	interface name: 'interface'.
 
 	model newInheritance superclass: classA; subclass: classB.
-	model newImplementation interface: interface; implementingClass: classB.
 
-	patterns := (SEPatternBlueprint new addMethodBlueprint: (#method methodIn: { #interface })) applyOn: model.
+	patterns := (SEPatternBlueprint new addMethodBlueprint: (#method methodIn: { #classB })) applyOn: model.
 
 	patterns := patterns collect: [:a | a patternEntities first ] .
 
