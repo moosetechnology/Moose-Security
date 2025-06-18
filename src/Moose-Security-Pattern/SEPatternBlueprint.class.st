@@ -53,10 +53,3 @@ SEPatternBlueprint >> initialize [
 	super initialize.
 	methodBlueprints := OrderedCollection new.
 ]
-
-{ #category : 'adding' }
-SEPatternBlueprint >> methodBlueprints [
-	self flag: #todo. "should become a dead method"
-
-	^ methodBlueprints
-]

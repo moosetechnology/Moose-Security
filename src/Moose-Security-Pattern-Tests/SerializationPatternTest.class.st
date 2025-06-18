@@ -377,8 +377,6 @@ SerializationPatternTest >> testFindingSimpleInheritanceForParametricClasses2 [
 
 	| patterns model superclass supermethod subclass submethod |
 	model := FamixJavaModel new name: 'model'.
-	
-	self flag: #todo.
 
 	superclass := model newClassNamed: 'superclass'.
 	supermethod := model newMethodNamed: 'method'.

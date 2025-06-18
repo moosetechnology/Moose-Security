@@ -4,8 +4,10 @@ Extension { #name : 'MooseAbstractGroup' }
 MooseAbstractGroup >> allClassesAndInterfacesNamedIn: aCollection [
 
 	| res |
-	res := self entities select: [ :entity |
-		       entity isClass or: [ entity isInterface ] ].
+	self flag:#todo. "correct the bug on cc31"
+	res := self allClasses.
+	res addAll: (self allWithType: FamixJavaInterface ).
+	res addAll: (self allWithType: FamixJavaParametricInterface).
 
 
 	^ res select: [ :entity |
