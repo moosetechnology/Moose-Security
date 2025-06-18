@@ -48,28 +48,22 @@ SEMethodInvoctationBlueprint >> calling: aSEMethodBlueprint [
 { #category : 'detection' }
 SEMethodInvoctationBlueprint >> firstParentHavingTheMethodOfClass: aClass [
 
-	| result |
-	result := OrderedCollection new.
-
-	(aClass hasAnImplemetedMethodNamed: modelMethodName) ifTrue: [ ^ { aClass } ].
+	(aClass hasAnImplemetedMethodNamed: modelMethodName) ifTrue: [ ^ aClass ].
 	"doing this first to make sure the class is studied before interfaces (due to java prioritizing classes implementations of methods)"
 	aClass superclass ifNotNil: [ :superclass |
-		(self firstParentHavingTheMethodOfClass: superclass) ifNotEmpty: [ :res | ^ res ] ].
+		(self firstParentHavingTheMethodOfClass: superclass) ifNotNil: [ :res | ^ res ] ].
 	aClass interfaceImplementations do: [ :interface |
-		result addAll: (self firstParentHavingTheMethodOfInterface: interface interface) ].
-	^ result
+		(self firstParentHavingTheMethodOfInterface: interface interface) ifNotNil: [:res | ^res ] ].
+	^ nil
 ]
 
 { #category : 'detection' }
 SEMethodInvoctationBlueprint >> firstParentHavingTheMethodOfInterface: anInterface [
 
-	| result |
-	result := OrderedCollection new.
-
-	(anInterface hasAnImplemetedMethodNamed: modelMethodName) ifTrue: [ ^ { anInterface } ].
+	(anInterface hasAnImplemetedMethodNamed: modelMethodName) ifTrue: [ ^ anInterface ].
 	anInterface superclass ifNotNil: [ :superclass |
-		result addAll: (self firstParentHavingTheMethodOfInterface: superclass) ].
-	^ result
+		(self firstParentHavingTheMethodOfInterface: superclass) ifNotNil: [:res | ^res ]].
+	^ nil
 ]
 
 { #category : 'detection' }
@@ -84,7 +78,8 @@ SEMethodInvoctationBlueprint >> getAllPossibleTypesFor: anObject [
 SEMethodInvoctationBlueprint >> getAllPossibleTypesForClass: aClass [
 
 	| res |
-	res := (self firstParentHavingTheMethodOfClass: aClass) asSet.
+	res := Set new.
+	res add: (self firstParentHavingTheMethodOfClass: aClass).
 
 	aClass subInheritances do: [ :entity |
 		res addAll: (self getAllPossibleTypesForClass: entity subclass) ].
@@ -95,7 +90,8 @@ SEMethodInvoctationBlueprint >> getAllPossibleTypesForClass: aClass [
 SEMethodInvoctationBlueprint >> getAllPossibleTypesForInterface: anInterface [
 
 	| res |
-	res := (self firstParentHavingTheMethodOfInterface: anInterface) asSet.
+	res := Set new .
+	res add: (self firstParentHavingTheMethodOfInterface: anInterface). 
 
 	anInterface implementations do: [ :entity |
 		res addAll: (self getAllPossibleTypesForClass: entity implementingClass) ].

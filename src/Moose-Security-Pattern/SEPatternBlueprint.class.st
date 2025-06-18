@@ -2,8 +2,7 @@ Class {
 	#name : 'SEPatternBlueprint',
 	#superclass : 'Object',
 	#instVars : [
-		'methodBlueprints',
-		'model'
+		'methodBlueprints'
 	],
 	#category : 'Moose-Security-Pattern',
 	#package : 'Moose-Security-Pattern'
@@ -19,8 +18,7 @@ SEPatternBlueprint >> addMethodBlueprint: aMethodBlueprint [
 SEPatternBlueprint >> applyOn: aModel [
 
 	| resultPatterns |
-	model := aModel.
-	methodBlueprints := methodBlueprints collect: [ :blueprint | blueprint model: aModel ].
+	methodBlueprints do: [ :blueprint | blueprint model: aModel ].
 	resultPatterns := methodBlueprints first getFirstPatternMethods collect: [ :a |
 		                  { a } asOrderedCollection ].
 
