@@ -50,13 +50,12 @@ SEMethodInvoctationBlueprint >> firstParentHavingTheMethodOfClass: aClass [
 
 	(aClass hasAnImplemetedMethodNamed: modelMethodName) ifTrue: [ ^ aClass ].
 	"doing this first to make sure the class is studied before interfaces (due to java prioritizing classes implementations of methods)"
-	
-	(aClass = aClass superclass) ifTrue:[ ^ nil].
-	
+
 	aClass superclass ifNotNil: [ :superclass |
+		aClass = superclass ifTrue: [ ^ nil ].
 		(self firstParentHavingTheMethodOfClass: superclass) ifNotNil: [ :res | ^ res ] ].
 	aClass interfaceImplementations do: [ :interface |
-		(self firstParentHavingTheMethodOfInterface: interface interface) ifNotNil: [:res | ^res ] ].
+		(self firstParentHavingTheMethodOfInterface: interface interface) ifNotNil: [ :res | ^ res ] ].
 	^ nil
 ]
 
@@ -64,11 +63,12 @@ SEMethodInvoctationBlueprint >> firstParentHavingTheMethodOfClass: aClass [
 SEMethodInvoctationBlueprint >> firstParentHavingTheMethodOfInterface: anInterface [
 
 	(anInterface hasAnImplemetedMethodNamed: modelMethodName) ifTrue: [ ^ anInterface ].
-	
-	(anInterface = anInterface superclass) ifTrue:[ ^ nil].
-	
+
+
+
 	anInterface superclass ifNotNil: [ :superclass |
-		(self firstParentHavingTheMethodOfInterface: superclass) ifNotNil: [:res | ^res ]].
+		anInterface = superclass ifTrue: [ ^ nil ].
+		(self firstParentHavingTheMethodOfInterface: superclass) ifNotNil: [ :res | ^ res ] ].
 	^ nil
 ]
 
@@ -85,10 +85,10 @@ SEMethodInvoctationBlueprint >> getAllPossibleTypesForClass: aClass [
 
 	| res |
 	res := Set new.
-	(self firstParentHavingTheMethodOfClass: aClass) ifNotNil: [:a | res add: a].
+	(self firstParentHavingTheMethodOfClass: aClass) ifNotNil: [ :a | res add: a ].
 
 	aClass subInheritances do: [ :entity |
-		res addAll: (self getAllPossibleTypesForClass: entity subclass) ].
+		aClass = entity subclass ifFalse: [ res addAll: (self getAllPossibleTypesForClass: entity subclass) ] ].
 	^ res
 ]
 
@@ -96,13 +96,13 @@ SEMethodInvoctationBlueprint >> getAllPossibleTypesForClass: aClass [
 SEMethodInvoctationBlueprint >> getAllPossibleTypesForInterface: anInterface [
 
 	| res |
-	res := Set new .
-	(self firstParentHavingTheMethodOfInterface: anInterface) ifNotNil: [:a | res add: a].
+	res := Set new.
+	(self firstParentHavingTheMethodOfInterface: anInterface) ifNotNil: [ :a | res add: a ].
 
 	anInterface implementations do: [ :entity |
-		res addAll: (self getAllPossibleTypesForClass: entity implementingClass) ].
+		anInterface = entity implementingClass ifFalse: [ res addAll: (self getAllPossibleTypesForClass: entity implementingClass) ] ].
 	anInterface subInheritances do: [ :entity |
-		res addAll: (self getAllPossibleTypesForInterface: entity subclass) ].
+		anInterface = entity subclass ifFalse: [ res addAll: (self getAllPossibleTypesForInterface: entity subclass) ] ].
 
 	^ res
 ]
