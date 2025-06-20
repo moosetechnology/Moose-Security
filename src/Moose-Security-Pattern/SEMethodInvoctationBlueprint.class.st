@@ -50,6 +50,9 @@ SEMethodInvoctationBlueprint >> firstParentHavingTheMethodOfClass: aClass [
 
 	(aClass hasAnImplemetedMethodNamed: modelMethodName) ifTrue: [ ^ aClass ].
 	"doing this first to make sure the class is studied before interfaces (due to java prioritizing classes implementations of methods)"
+	
+	(aClass = aClass superclass) ifTrue:[ ^ nil].
+	
 	aClass superclass ifNotNil: [ :superclass |
 		(self firstParentHavingTheMethodOfClass: superclass) ifNotNil: [ :res | ^ res ] ].
 	aClass interfaceImplementations do: [ :interface |
@@ -61,6 +64,9 @@ SEMethodInvoctationBlueprint >> firstParentHavingTheMethodOfClass: aClass [
 SEMethodInvoctationBlueprint >> firstParentHavingTheMethodOfInterface: anInterface [
 
 	(anInterface hasAnImplemetedMethodNamed: modelMethodName) ifTrue: [ ^ anInterface ].
+	
+	(anInterface = anInterface superclass) ifTrue:[ ^ nil].
+	
 	anInterface superclass ifNotNil: [ :superclass |
 		(self firstParentHavingTheMethodOfInterface: superclass) ifNotNil: [:res | ^res ]].
 	^ nil
@@ -79,7 +85,7 @@ SEMethodInvoctationBlueprint >> getAllPossibleTypesForClass: aClass [
 
 	| res |
 	res := Set new.
-	res add: (self firstParentHavingTheMethodOfClass: aClass).
+	(self firstParentHavingTheMethodOfClass: aClass) ifNotNil: [:a | res add: a].
 
 	aClass subInheritances do: [ :entity |
 		res addAll: (self getAllPossibleTypesForClass: entity subclass) ].
