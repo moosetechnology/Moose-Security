@@ -97,7 +97,7 @@ SEMethodInvoctationBlueprint >> getAllPossibleTypesForInterface: anInterface [
 
 	| res |
 	res := Set new .
-	res add: (self firstParentHavingTheMethodOfInterface: anInterface). 
+	(self firstParentHavingTheMethodOfInterface: anInterface) ifNotNil: [:a | res add: a].
 
 	anInterface implementations do: [ :entity |
 		res addAll: (self getAllPossibleTypesForClass: entity implementingClass) ].
