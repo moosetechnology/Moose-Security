@@ -23,8 +23,9 @@ SEMethodInvoctationBlueprint >> addMethodParentType: aString [
 
 { #category : 'adding' }
 SEMethodInvoctationBlueprint >> addMethodParentTypes: aCollection [
-
-	aCollection do: [:type | self addMethodParentType: type].
+	
+	methodParentTypes addAll: aCollection.
+	possibleParentTypes := nil.
 ]
 
 { #category : 'actions' }
@@ -110,10 +111,7 @@ SEMethodInvoctationBlueprint >> getAllPossibleTypesForInterface: anInterface [
 { #category : 'detection' }
 SEMethodInvoctationBlueprint >> getFirstPatternMethods [
 
-	| methodSet  |
-	methodSet := model allMethodsNamed: self modelMethodName.
-	
-	^ methodSet select: [ :method | self isSearched: method parentType]
+	^ (model allMethodsNamed: modelMethodName) select: [ :method | self isSearched: method parentType ]
 ]
 
 { #category : 'detection' }
