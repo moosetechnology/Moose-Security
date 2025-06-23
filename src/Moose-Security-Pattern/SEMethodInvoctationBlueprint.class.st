@@ -1,5 +1,7 @@
 "
-isWildCard* servira dans le cas ou ne connait pas le nom de la methode ou ses parents (exemple : reflexion)
+# Represent a blueprint for a method of a pattern blueprint.
+- modelMethodName : name of the method in the model
+- methodParentTypes : names of the parent types of the method (add nothing to make every class possibles)
 "
 Class {
 	#name : 'SEMethodInvoctationBlueprint',
