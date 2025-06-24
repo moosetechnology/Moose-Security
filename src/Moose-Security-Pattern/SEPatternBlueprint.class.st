@@ -15,7 +15,7 @@
 - ""class1"" by the name of the class where method1 is.
 
 # For more example : 
-See allKnownPatterns from SEKnownPattern.
+See allKnownPatterns from SEPatternFinder.
 
 # For an easy use : 
 SEKnownPattern applyOn: aModel

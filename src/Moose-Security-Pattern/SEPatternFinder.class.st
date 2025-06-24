@@ -1,17 +1,17 @@
 "
 # How to use :
 
-- SEKnownPattern applyOn: aModel
+- SEPatternFinder applyOn: aModel
 "
 Class {
-	#name : 'SEKnownPattern',
-	#superclass : 'SEPatternBlueprint',
+	#name : 'SEPatternFinder',
+	#superclass : 'Object',
 	#category : 'Moose-Security-Pattern',
 	#package : 'Moose-Security-Pattern'
 }
 
 { #category : 'as yet unclassified' }
-SEKnownPattern class >> allKnownPatterns [
+SEPatternFinder class >> allKnownPatterns [
 
 	| result |
 	result := Set new.
@@ -23,11 +23,6 @@ SEKnownPattern class >> allKnownPatterns [
 	"#2, known on commons-collections4-4.0"
 	result add: (((#get methodIn: { #LazyMap }) calling: (#transform methodIn: { #ChainedTransformer })) calling:
 			 (#transform methodIn: { #InvokerTransformer. #InstantiateTransformer })).
-	
-	"2.1"
-	result add: ((((#get methodIn: { #LazyMap }) calling: (#transform methodIn: { #ChainedTransformer })) calling:
-			 (#transform methodIn: { #InvokerTransformer. #InstantiateTransformer })) calling: 
-			(#invoke methodIn: { #Method })).
 
 	"#3, known on JCL-7u21"
 	result add: ((((#readObject methodIn: { #PriorityQueue }) calling: (#heapify methodIn: { #PriorityQueue })) calling:
@@ -58,6 +53,6 @@ SEKnownPattern class >> allKnownPatterns [
 ]
 
 { #category : 'instance creation' }
-SEKnownPattern class >> applyOn: aModel [
+SEPatternFinder class >> applyOn: aModel [
 	^ self allKnownPatterns flatCollect:[:pattern | pattern applyOn: aModel].
 ]
