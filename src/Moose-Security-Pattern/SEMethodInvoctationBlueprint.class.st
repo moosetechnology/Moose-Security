@@ -1,5 +1,7 @@
 "
-isWildCard* servira dans le cas ou ne connait pas le nom de la methode ou ses parents (exemple : reflexion)
+# Represent a blueprint for a method of a pattern blueprint.
+- modelMethodName : name of the method in the model
+- methodParentTypes : names of the parent types of the method (add nothing to make every class possibles)
 "
 Class {
 	#name : 'SEMethodInvoctationBlueprint',
@@ -23,8 +25,9 @@ SEMethodInvoctationBlueprint >> addMethodParentType: aString [
 
 { #category : 'adding' }
 SEMethodInvoctationBlueprint >> addMethodParentTypes: aCollection [
-
-	aCollection do: [:type | self addMethodParentType: type].
+	
+	methodParentTypes addAll: aCollection.
+	possibleParentTypes := nil.
 ]
 
 { #category : 'actions' }
@@ -64,12 +67,8 @@ SEMethodInvoctationBlueprint >> firstParentHavingTheMethodOfInterface: anInterfa
 
 	(anInterface hasAnImplemetedMethodNamed: modelMethodName) ifTrue: [ ^ anInterface ].
 
-
-
-	anInterface superclass ifNotNil: [ :superclass |
-		anInterface = superclass ifTrue: [ ^ nil ].
-		(self firstParentHavingTheMethodOfInterface: superclass) ifNotNil: [ :res | ^ res ] ].
-	^ nil
+	^ anInterface superclass ifNotNil: [ :superclass |
+		  anInterface = superclass ifFalse: [ self firstParentHavingTheMethodOfInterface: superclass ] ]
 ]
 
 { #category : 'detection' }
@@ -97,7 +96,7 @@ SEMethodInvoctationBlueprint >> getAllPossibleTypesForInterface: anInterface [
 
 	| res |
 	res := Set new.
-	(self firstParentHavingTheMethodOfInterface: anInterface) ifNotNil: [ :a | res add: a ].
+	(self firstParentHavingTheMethodOfInterface: anInterface) ifNotNil: [ :a | res add: a].
 
 	anInterface implementations do: [ :entity |
 		anInterface = entity implementingClass ifFalse: [ res addAll: (self getAllPossibleTypesForClass: entity implementingClass) ] ].
@@ -110,10 +109,7 @@ SEMethodInvoctationBlueprint >> getAllPossibleTypesForInterface: anInterface [
 { #category : 'detection' }
 SEMethodInvoctationBlueprint >> getFirstPatternMethods [
 
-	| methodSet  |
-	methodSet := model allMethodsNamed: self modelMethodName.
-	
-	^ methodSet select: [ :method | self isSearched: method parentType]
+	^ (model allMethodsNamed: modelMethodName) select: [ :method | self isSearched: method parentType ]
 ]
 
 { #category : 'detection' }
@@ -182,4 +178,14 @@ SEMethodInvoctationBlueprint >> possibleParentTypes [
 	
 	possibleParentTypes ifNil:[ self calculatePossibleParentTypes ].
 	^ possibleParentTypes
+]
+
+{ #category : 'printing' }
+SEMethodInvoctationBlueprint >> printBlueprintOn: aStream [
+
+	aStream << modelMethodName << ' ['.
+	methodParentTypes size = 1
+		ifTrue: [ aStream print: methodParentTypes anyOne ]
+		ifFalse: [ aStream print: methodParentTypes ].
+	aStream << '] '
 ]

@@ -1,6 +1,11 @@
+"
+# How to use :
+
+- SEKnownPattern applyOn: aModel
+"
 Class {
 	#name : 'SEKnownPattern',
-	#superclass : 'SEPattern',
+	#superclass : 'SEPatternBlueprint',
 	#category : 'Moose-Security-Pattern',
 	#package : 'Moose-Security-Pattern'
 }

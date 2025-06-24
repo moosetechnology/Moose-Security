@@ -8,3 +8,11 @@ Symbol >> methodIn: aCollection [
 		  addMethodParentTypes: aCollection;
 		  yourself
 ]
+
+{ #category : '*Moose-Security-Pattern' }
+Symbol >> methodInAll [
+
+	^ SEMethodInvoctationBlueprint new
+		  modelMethodName: self;
+		  yourself
+]
