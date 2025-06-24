@@ -4,14 +4,12 @@ Extension { #name : 'MooseAbstractGroup' }
 MooseAbstractGroup >> allClassesAndInterfacesNamedIn: aCollection [
 
 	| res |
-	self flag:#todo. "correct the bug on cc31"
-	res := self allClasses.
-	res addAll: (self allWithType: FamixJavaInterface ).
-	res addAll: (self allWithType: FamixJavaParametricInterface).
+	res := OrderedCollection new.
+	res addAll: (self allClasses select: [ :class | aCollection includes: class name ]).
+	res addAll: ((self allWithType: FamixJavaInterface) select: [ :class | aCollection includes: class name ]).
+	res addAll: ((self allWithType: FamixJavaParametricInterface) select: [ :class | aCollection includes: class name ]).
 
-
-	^ res select: [ :entity |
-		  aCollection anySatisfy: [ :elem | elem = entity name ] ]
+	^ res
 ]
 
 { #category : '*Moose-Security-Pattern' }
