@@ -183,3 +183,13 @@ SEMethodInvoctationBlueprint >> possibleParentTypes [
 	possibleParentTypes ifNil:[ self calculatePossibleParentTypes ].
 	^ possibleParentTypes
 ]
+
+{ #category : 'printing' }
+SEMethodInvoctationBlueprint >> printBlueprintOn: aStream [
+
+	aStream << modelMethodName << ' ['.
+	methodParentTypes size = 1
+		ifTrue: [ aStream print: methodParentTypes anyOne ]
+		ifFalse: [ aStream print: methodParentTypes ].
+	aStream << '] '
+]

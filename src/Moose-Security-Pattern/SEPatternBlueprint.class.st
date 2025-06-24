@@ -51,3 +51,15 @@ SEPatternBlueprint >> initialize [
 	super initialize.
 	methodBlueprints := OrderedCollection new.
 ]
+
+{ #category : 'printing' }
+SEPatternBlueprint >> printOn: aStream [
+
+	super printOn: aStream.
+
+	aStream << ' ('.
+
+	methodBlueprints do: [ :blueprint | blueprint printBlueprintOn: aStream ] separatedBy: [ aStream << ' -> ' ].
+
+	aStream << ')'
+]
