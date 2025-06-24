@@ -67,12 +67,8 @@ SEMethodInvoctationBlueprint >> firstParentHavingTheMethodOfInterface: anInterfa
 
 	(anInterface hasAnImplemetedMethodNamed: modelMethodName) ifTrue: [ ^ anInterface ].
 
-
-
-	anInterface superclass ifNotNil: [ :superclass |
-		anInterface = superclass ifTrue: [ ^ nil ].
-		(self firstParentHavingTheMethodOfInterface: superclass) ifNotNil: [ :res | ^ res ] ].
-	^ nil
+	^ anInterface superclass ifNotNil: [ :superclass |
+		  anInterface = superclass ifFalse: [ self firstParentHavingTheMethodOfInterface: superclass ] ]
 ]
 
 { #category : 'detection' }
@@ -100,7 +96,7 @@ SEMethodInvoctationBlueprint >> getAllPossibleTypesForInterface: anInterface [
 
 	| res |
 	res := Set new.
-	(self firstParentHavingTheMethodOfInterface: anInterface) ifNotNil: [ :a | res add: a ].
+	(self firstParentHavingTheMethodOfInterface: anInterface) ifNotNil: [ :a | res add: a].
 
 	anInterface implementations do: [ :entity |
 		anInterface = entity implementingClass ifFalse: [ res addAll: (self getAllPossibleTypesForClass: entity implementingClass) ] ].

@@ -4,7 +4,6 @@ Extension { #name : 'MooseAbstractGroup' }
 MooseAbstractGroup >> allClassesAndInterfacesNamedIn: aCollection [
 
 	| res |
-	self flag:#todo. "correct the bug on cc31"
 	res := self allClasses.
 	res addAll: (self allWithType: FamixJavaInterface ).
 	res addAll: (self allWithType: FamixJavaParametricInterface).

@@ -107,6 +107,22 @@ SerializationPatternTest >> testComplexResearch3 [
 ]
 
 { #category : 'running' }
+SerializationPatternTest >> testDontLoopWhenSuperclassIsItself [
+
+	| patterns model class  |
+	
+	self flag: #todo. "how to make the test fail if the method take too much time?"
+	
+	model := FamixJavaModel new name: 'model'.
+
+	class := model newClassNamed: 'class'.
+	
+	patterns := (SEPatternBlueprint new addMethodBlueprint: (#method methodIn: { #class })) applyOn: model.
+
+	self assert: [patterns isEmpty].
+]
+
+{ #category : 'running' }
 SerializationPatternTest >> testExpectedCategory [
 
 	| pattern model classA methodA |
@@ -354,7 +370,7 @@ SerializationPatternTest >> testFindingSimpleInheritanceForParametricClasses1 [
 	| patterns model superclass supermethod subclass submethod |
 	model := FamixJavaModel new name: 'model'.
 	
-	self flag:#todo. "the parametric class do not have arguments, should it have at leat one to make the concretization?"
+	self flag:#todo. "the parametric class dont have arguments, should it have at leat one to make the concretization?"
 
 	superclass := model newParametricClass.
 	superclass name: 'superclass'.
