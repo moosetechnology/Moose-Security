@@ -26,7 +26,7 @@ SEMethodInvoctationBlueprintTest >> testPossibleParentTypesForDescandantsOfInter
 	model newImplementation interface: interfaceB; implementingClass: classA.
 	model newImplementation interface: interfaceB; implementingClass: classB.
 	
-	blueprint := SEMethodInvoctationBlueprint new modelMethodName: #method ; addMethodParentType: #interfaceA; model: model.
+	blueprint := SEMethodInvoctationBlueprint new methodName: #method ; addMethodParentType: #interfaceA; model: model.
 
 	self assertCollection: (blueprint possibleParentTypes) hasSameElements: {interfaceA . classB } 
 ]

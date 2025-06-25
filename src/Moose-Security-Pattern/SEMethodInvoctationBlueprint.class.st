@@ -7,10 +7,10 @@ Class {
 	#name : 'SEMethodInvoctationBlueprint',
 	#superclass : 'Object',
 	#instVars : [
-		'modelMethodName',
 		'methodParentTypes',
 		'possibleParentTypes',
-		'model'
+		'model',
+		'methodName'
 	],
 	#category : 'Moose-Security-Pattern',
 	#package : 'Moose-Security-Pattern'
@@ -51,7 +51,7 @@ SEMethodInvoctationBlueprint >> calling: aSEMethodBlueprint [
 { #category : 'detection' }
 SEMethodInvoctationBlueprint >> firstParentHavingTheMethodOfClass: aClass [
 
-	(aClass hasAnImplemetedMethodNamed: modelMethodName) ifTrue: [ ^ aClass ].
+	(aClass hasAnImplemetedMethodNamed: methodName) ifTrue: [ ^ aClass ].
 	"doing this first to make sure the class is studied before interfaces (due to java prioritizing classes implementations of methods)"
 
 	aClass superclass ifNotNil: [ :superclass |
@@ -65,7 +65,7 @@ SEMethodInvoctationBlueprint >> firstParentHavingTheMethodOfClass: aClass [
 { #category : 'detection' }
 SEMethodInvoctationBlueprint >> firstParentHavingTheMethodOfInterface: anInterface [
 
-	(anInterface hasAnImplemetedMethodNamed: modelMethodName) ifTrue: [ ^ anInterface ].
+	(anInterface hasAnImplemetedMethodNamed: methodName) ifTrue: [ ^ anInterface ].
 
 	^ anInterface superclass ifNotNil: [ :superclass |
 		  anInterface = superclass ifFalse: [ self firstParentHavingTheMethodOfInterface: superclass ] ]
@@ -109,7 +109,7 @@ SEMethodInvoctationBlueprint >> getAllPossibleTypesForInterface: anInterface [
 { #category : 'detection' }
 SEMethodInvoctationBlueprint >> getFirstPatternMethods [
 
-	^ (model allMethodsNamed: modelMethodName) select: [ :method | self isSearched: method parentType ]
+	^ (model allMethodsNamed: methodName) select: [ :method | self isSearched: method parentType ]
 ]
 
 { #category : 'detection' }
@@ -117,7 +117,7 @@ SEMethodInvoctationBlueprint >> getMethodsAfter: aMethod [
 
 	| methodSet |
 	methodSet := ((aMethod query outgoing objects dependenciesOfType: FamixTInvocation) select: [
-		              :method | method name = self modelMethodName ]) asSet.
+		              :method | method name = self methodName ]) asSet.
 	^ self getNextStepOfPattern: methodSet
 ]
 
@@ -130,7 +130,7 @@ SEMethodInvoctationBlueprint >> getNextStepOfPattern: methodCollection [
 	methodCollection do: [ :method | res addAll: (self getAllPossibleTypesFor: method parentType) ].
 	^ res
 		  select: [ :entity | self isSearched: entity ]
-		  thenCollect: [ :entity | entity methodNamed: modelMethodName ]
+		  thenCollect: [ :entity | entity methodNamed: methodName ]
 ]
 
 { #category : 'initialization' }
@@ -143,6 +143,18 @@ SEMethodInvoctationBlueprint >> initialize [
 SEMethodInvoctationBlueprint >> isSearched: aClass [
 
 	^ self methodParentTypes isEmpty or: [ self possibleParentTypes includes: aClass ]
+]
+
+{ #category : 'getter' }
+SEMethodInvoctationBlueprint >> methodName [
+
+	^ methodName
+]
+
+{ #category : 'adding' }
+SEMethodInvoctationBlueprint >> methodName: aString [
+
+	methodName := aString
 ]
 
 { #category : 'getter' }
@@ -162,18 +174,6 @@ SEMethodInvoctationBlueprint >> model: aModel [
 ]
 
 { #category : 'getter' }
-SEMethodInvoctationBlueprint >> modelMethodName [
-
-	^ modelMethodName
-]
-
-{ #category : 'adding' }
-SEMethodInvoctationBlueprint >> modelMethodName: aString [
-
-	modelMethodName := aString
-]
-
-{ #category : 'getter' }
 SEMethodInvoctationBlueprint >> possibleParentTypes [
 	
 	possibleParentTypes ifNil:[ self calculatePossibleParentTypes ].
@@ -183,7 +183,7 @@ SEMethodInvoctationBlueprint >> possibleParentTypes [
 { #category : 'printing' }
 SEMethodInvoctationBlueprint >> printBlueprintOn: aStream [
 
-	aStream << modelMethodName << ' ['.
+	aStream << methodName << ' ['.
 	methodParentTypes size = 1
 		ifTrue: [ aStream print: methodParentTypes anyOne ]
 		ifFalse: [ aStream print: methodParentTypes ].

@@ -4,7 +4,7 @@ Extension { #name : 'Symbol' }
 Symbol >> methodIn: aCollection [
 
 	^ SEMethodInvoctationBlueprint new
-		  modelMethodName: self;
+		  methodName: self;
 		  addMethodParentTypes: aCollection;
 		  yourself
 ]
@@ -13,6 +13,6 @@ Symbol >> methodIn: aCollection [
 Symbol >> methodInAll [
 
 	^ SEMethodInvoctationBlueprint new
-		  modelMethodName: self;
+		  methodName: self;
 		  yourself
 ]
