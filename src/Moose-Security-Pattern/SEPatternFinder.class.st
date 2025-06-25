@@ -13,46 +13,82 @@ Class {
 { #category : 'as yet unclassified' }
 SEPatternFinder class >> allKnownPatterns [
 
-	| result |
-	result := Set new.
-
-	"#1, known on commons-collections-3.1"
-	result add: (((#compare methodIn: { #TransformingComparator }) calling: (#transform methodIn: { #ChainedTransformer })) calling:
-			 (#transform methodIn: { #InstantiateTransformer })).
-
-	"#2, known on commons-collections4-4.0"
-	result add: (((#get methodIn: { #LazyMap }) calling: (#transform methodIn: { #ChainedTransformer })) calling:
-			 (#transform methodIn: { #InvokerTransformer. #InstantiateTransformer })).
-
-	"#3, known on JCL-7u21"
-	result add: ((((#readObject methodIn: { #PriorityQueue }) calling: (#heapify methodIn: { #PriorityQueue })) calling:
-			  (#siftDown methodIn: { #PriorityQueue })) calling: (#siftDownUsingComparator methodIn: { #PriorityQueue })). "calling:
-			 (#compare methodIn: { #Comparator })"
-
-	"#4, known on JCL-7u21"
-	result add: ((((((#getOutputProperties methodIn: { #TemplatesImpl }) calling: (#newTransformer methodIn: { #TemplatesImpl })) calling:
-			    (#getTransletInstance methodIn: { #TemplatesImpl })) calling: (#newInstance methodIn: { #Class })) calling:
-			  (#newInstance0 methodIn: { #Class })) calling: (#newInstance methodIn: { #Constructor })).
-
-	"#5, known on JCL-7u21"
-	result add: ((((#newTransformer methodIn: { #TemplatesImpl }) calling: (#getTransletInstance methodIn: { #TemplatesImpl })) calling:
-			  (#newInstance methodIn: { #Class })) calling: (#newInstance0 methodIn: { #Class })). "calling:
-			 (#newInstance methodIn: { #Constructor })"
-
-	"#6, known on JCL-7u21"
-	result add: ((#readObject methodIn: { #BadAttributeValueException }) calling: (#toString methodIn: {  })).
-
-	"#7, known on JCL-7u21"
-	result add:
-		(((#readObject methodIn: { #HashMap }) calling: (#putForCreate methodIn: { #HashMap })) calling: (#hash methodIn: { #HashMap })). "calling:
-			  (#hashCode methodIn: {  })"
-
-
-
-	^ result
+	^ self class methods
+		  select: [ :method | method pragmas anySatisfy: [ :pragma | pragma selector = #attackPattern ] ]
+		  thenCollect: [ :method | self perform: method selector ]
 ]
 
 { #category : 'instance creation' }
 SEPatternFinder class >> applyOn: aModel [
 	^ self allKnownPatterns flatCollect:[:pattern | pattern applyOn: aModel].
+]
+
+{ #category : 'as yet unclassified' }
+SEPatternFinder class >> badAttributeValueExceptionPattern [
+	"known on JCL-7u21"
+
+	<attackPattern>
+	^ (#readObject methodIn: { #BadAttributeValueException }) calling: (#toString methodIn: {  })
+]
+
+{ #category : 'as yet unclassified' }
+SEPatternFinder class >> hashMapPattern1 [
+	"known on JCL-7u21"
+
+	<attackPattern>
+	^ (((#readObject methodIn: { #HashMap }) calling: (#putForCreate methodIn: { #HashMap })) calling:
+		   (#hash methodIn: { #HashMap })) calling: (#hashCode methodIn: {  })
+]
+
+{ #category : 'as yet unclassified' }
+SEPatternFinder class >> lazyMapPattern [
+	" known on commons-collections4-4.0"
+
+	<attackPattern>
+	^ ((#get methodIn: { #LazyMap }) calling: (#transform methodIn: { #ChainedTransformer })) calling:
+		  (#transform methodIn: { #InvokerTransformer. #InstantiateTransformer })
+]
+
+{ #category : 'as yet unclassified' }
+SEPatternFinder class >> priorityQueuePattern [
+	"#known on JCL-7u21"
+
+	<attackPattern>
+	^ ((((#readObject methodIn: { #PriorityQueue }) calling: (#heapify methodIn: { #PriorityQueue }))
+		    calling: (#siftDown methodIn: { #PriorityQueue })) calling:
+		   (#siftDownUsingComparator methodIn: { #PriorityQueue })) calling:
+		  (#compare methodIn: { #Comparator })
+]
+
+{ #category : 'as yet unclassified' }
+SEPatternFinder class >> templatesImplPattern1 [
+	"known on JCL-7u21"
+
+	<attackPattern>
+	^ (((((#getOutputProperties methodIn: { #TemplatesImpl }) calling:
+		      (#newTransformer methodIn: { #TemplatesImpl })) calling:
+		     (#getTransletInstance methodIn: { #TemplatesImpl })) calling:
+		    (#newInstance methodIn: { #Class })) calling: (#newInstance0 methodIn: { #Class })) calling:
+		  (#newInstance methodIn: { #Constructor })
+]
+
+{ #category : 'as yet unclassified' }
+SEPatternFinder class >> templatesImplPattern2 [
+	"known on JCL-7u21"
+
+	<attackPattern>
+	^ ((((#newTransformer methodIn: { #TemplatesImpl }) calling:
+		     (#getTransletInstance methodIn: { #TemplatesImpl })) calling:
+		    (#newInstance methodIn: { #Class })) calling: (#newInstance0 methodIn: { #Class })) calling:
+		  (#newInstance methodIn: { #Constructor })
+]
+
+{ #category : 'as yet unclassified' }
+SEPatternFinder class >> transformingComparatorPattern [
+	"known on commons-collections-3.1"
+
+	<attackPattern>
+	^ ((#compare methodIn: { #TransformingComparator }) calling:
+		   (#transform methodIn: { #ChainedTransformer })) calling:
+		  (#transform methodIn: { #InstantiateTransformer })
 ]
