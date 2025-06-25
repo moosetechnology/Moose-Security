@@ -55,8 +55,8 @@ SEMethodInvoctationBlueprint >> firstParentHavingTheMethodOfClass: aClass [
 	aClass superclass ifNotNil: [ :superclass |
 			aClass = superclass ifTrue: [ ^ nil ].
 			(self firstParentHavingTheMethodOfClass: superclass) ifNotNil: [ :res | ^ res ] ].
-	aClass interfaceImplementations do: [ :interface |
-		(self firstParentHavingTheMethodOfInterface: interface interface) ifNotNil: [ :res | ^ res ] ].
+	aClass interfaceImplementations do: [ :implementation |
+		(self firstParentHavingTheMethodOfInterface: implementation interface) ifNotNil: [ :res | ^ res ] ].
 	^ nil
 ]
 
@@ -84,8 +84,8 @@ SEMethodInvoctationBlueprint >> getAllPossibleTypesForClass: aClass [
 	res := Set new.
 	(self firstParentHavingTheMethodOfClass: aClass) ifNotNil: [ :a | res add: a. ].
 
-	aClass subInheritances do: [ :entity |
-		aClass = entity subclass ifFalse: [ res addAll: (self getAllPossibleTypesForClass: entity subclass) ] ].
+	aClass subInheritances do: [ :inheritance |
+		aClass = inheritance subclass ifFalse: [ res addAll: (self getAllPossibleTypesForClass: inheritance subclass) ] ].
 	^ res
 ]
 
@@ -96,10 +96,10 @@ SEMethodInvoctationBlueprint >> getAllPossibleTypesForInterface: anInterface [
 	res := Set new.
 	(self firstParentHavingTheMethodOfInterface: anInterface) ifNotNil: [ :a | res add: a].
 
-	anInterface implementations do: [ :entity |
-		anInterface = entity implementingClass ifFalse: [ res addAll: (self getAllPossibleTypesForClass: entity implementingClass) ] ].
-	anInterface subInheritances do: [ :entity |
-		anInterface = entity subclass ifFalse: [ res addAll: (self getAllPossibleTypesForInterface: entity subclass) ] ].
+	anInterface implementations do: [ :implementation |
+		anInterface = implementation implementingClass ifFalse: [ res addAll: (self getAllPossibleTypesForClass: implementation implementingClass) ] ].
+	anInterface subInheritances do: [ :inheritance |
+		anInterface = inheritance subclass ifFalse: [ res addAll: (self getAllPossibleTypesForInterface: inheritance subclass) ] ].
 
 	^ res
 ]
@@ -109,7 +109,7 @@ SEMethodInvoctationBlueprint >> getFirstPatternMethods [
 
 	^ self isParentTypeWildCard
 		  ifTrue: [ model allMethodsNamed: methodName ]
-		  ifFalse: [ self possibleParentTypes collect: [ :parent | parent methodNamed: methodName ] ]
+		  ifFalse: [ self possibleParentTypes collect: [ :entity | entity methodNamed: methodName ] ]
 ]
 
 { #category : 'detection' }
