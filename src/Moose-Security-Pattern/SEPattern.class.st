@@ -42,8 +42,3 @@ SEPattern >> initialize [
 SEPattern >> patternEntities [
 	^ patternEntities
 ]
-
-{ #category : 'accessing' }
-SEPattern >> patternEntities: aCollection [
-	patternEntities := aCollection
-]

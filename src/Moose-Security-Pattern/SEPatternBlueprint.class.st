@@ -56,8 +56,7 @@ SEPatternBlueprint >> applyOn: aModel [
 							                  add: (methodBlueprint getMethodsAfter: collection last);
 							                  yourself ]
 				                  thenReject: [ :col | col last isEmpty ].
-			resultPatterns := resultPatterns flatCollect: [ :col |
-				                  col last collect: [ :next | col allButLast copyWith: next ] ] ].
+			resultPatterns := resultPatterns flatCollect: [ :col | col last collect: [ :next | col allButLast copyWith: next ] ] ].
 
 	^ resultPatterns collect: [ :collected |
 			  SEPattern new

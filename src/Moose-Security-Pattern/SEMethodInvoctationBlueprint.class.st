@@ -33,10 +33,8 @@ SEMethodInvoctationBlueprint >> addMethodParentTypes: aCollection [
 { #category : 'actions' }
 SEMethodInvoctationBlueprint >> calculatePossibleParentTypes [
 
-	possibleParentTypes := Set new.
-
-	(model allClassesAndInterfacesNamedIn: methodParentTypes)
-		do: [ :parent | possibleParentTypes addAll: (self getAllPossibleTypesFor: parent)].
+	possibleParentTypes := (model allClassesAndInterfacesNamedIn: methodParentTypes) asSet flatCollect: [ :parent |
+		                       self getAllPossibleTypesFor: parent ]
 ]
 
 { #category : 'actions' }
@@ -55,8 +53,8 @@ SEMethodInvoctationBlueprint >> firstParentHavingTheMethodOfClass: aClass [
 	"doing this first to make sure the class is studied before interfaces (due to java prioritizing classes implementations of methods)"
 
 	aClass superclass ifNotNil: [ :superclass |
-		aClass = superclass ifTrue: [ ^ nil ].
-		(self firstParentHavingTheMethodOfClass: superclass) ifNotNil: [ :res | ^ res ] ].
+			aClass = superclass ifTrue: [ ^ nil ].
+			(self firstParentHavingTheMethodOfClass: superclass) ifNotNil: [ :res | ^ res ] ].
 	aClass interfaceImplementations do: [ :interface |
 		(self firstParentHavingTheMethodOfInterface: interface interface) ifNotNil: [ :res | ^ res ] ].
 	^ nil
@@ -74,9 +72,9 @@ SEMethodInvoctationBlueprint >> firstParentHavingTheMethodOfInterface: anInterfa
 { #category : 'detection' }
 SEMethodInvoctationBlueprint >> getAllPossibleTypesFor: anObject [
 
-	^ (anObject isClass
-		   ifTrue: [ self getAllPossibleTypesForClass: anObject ]
-		   ifFalse: [ self getAllPossibleTypesForInterface: anObject ]) asSet
+	^ anObject isClass
+		  ifTrue: [ self getAllPossibleTypesForClass: anObject ]
+		  ifFalse: [ self getAllPossibleTypesForInterface: anObject ]
 ]
 
 { #category : 'detection' }
@@ -84,7 +82,7 @@ SEMethodInvoctationBlueprint >> getAllPossibleTypesForClass: aClass [
 
 	| res |
 	res := Set new.
-	(self firstParentHavingTheMethodOfClass: aClass) ifNotNil: [ :a | res add: a ].
+	(self firstParentHavingTheMethodOfClass: aClass) ifNotNil: [ :a | res add: a. ].
 
 	aClass subInheritances do: [ :entity |
 		aClass = entity subclass ifFalse: [ res addAll: (self getAllPossibleTypesForClass: entity subclass) ] ].
@@ -117,19 +115,12 @@ SEMethodInvoctationBlueprint >> getFirstPatternMethods [
 { #category : 'detection' }
 SEMethodInvoctationBlueprint >> getMethodsAfter: aMethod [
 
-	| methodSet |
-	methodSet := ((aMethod query outgoing objects dependenciesOfType: FamixTInvocation) select: [
-		              :method | method name = self methodName ]) asSet.
-	^ self getNextStepOfPattern: methodSet
-]
-
-{ #category : 'detection' }
-SEMethodInvoctationBlueprint >> getNextStepOfPattern: methodCollection [
-
 	| res |
 	res := Set new.
 
-	methodCollection do: [ :method | res addAll: (self getAllPossibleTypesFor: method parentType) ].
+	(aMethod query outgoing objects dependenciesOfType: FamixTInvocation)
+		select: [ :method | method name = self methodName ]
+		thenDo: [ :method | res addAll: (self getAllPossibleTypesFor: method parentType) ].
 
 	^ self isParentTypeWildCard
 		  ifTrue: [ res collect: [ :entity | entity methodNamed: methodName ] ]
@@ -145,7 +136,7 @@ SEMethodInvoctationBlueprint >> initialize [
 	methodParentTypes := OrderedCollection new.
 ]
 
-{ #category : 'testing' }
+{ #category : 'getter' }
 SEMethodInvoctationBlueprint >> isParentTypeWildCard [
 	^ methodParentTypes isEmpty
 ]
