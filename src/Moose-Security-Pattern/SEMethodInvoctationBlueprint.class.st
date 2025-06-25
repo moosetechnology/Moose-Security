@@ -109,7 +109,9 @@ SEMethodInvoctationBlueprint >> getAllPossibleTypesForInterface: anInterface [
 { #category : 'detection' }
 SEMethodInvoctationBlueprint >> getFirstPatternMethods [
 
-	^ (model allMethodsNamed: methodName) select: [ :method | self isSearched: method parentType ]
+	^ self isParentTypeWildCard
+		  ifTrue: [ model allMethodsNamed: methodName ]
+		  ifFalse: [ self possibleParentTypes collect: [ :parent | parent methodNamed: methodName ] ]
 ]
 
 { #category : 'detection' }
@@ -128,9 +130,13 @@ SEMethodInvoctationBlueprint >> getNextStepOfPattern: methodCollection [
 	res := Set new.
 
 	methodCollection do: [ :method | res addAll: (self getAllPossibleTypesFor: method parentType) ].
-	^ res
-		  select: [ :entity | self isSearched: entity ]
-		  thenCollect: [ :entity | entity methodNamed: methodName ]
+
+	^ self isParentTypeWildCard
+		  ifTrue: [ res collect: [ :entity | entity methodNamed: methodName ] ]
+		  ifFalse: [
+				  res
+					  select: [ :entity | self possibleParentTypes includes: entity ]
+					  thenCollect: [ :entity | entity methodNamed: methodName ] ]
 ]
 
 { #category : 'initialization' }
@@ -139,10 +145,9 @@ SEMethodInvoctationBlueprint >> initialize [
 	methodParentTypes := OrderedCollection new.
 ]
 
-{ #category : 'detection' }
-SEMethodInvoctationBlueprint >> isSearched: aClass [
-
-	^ self methodParentTypes isEmpty or: [ self possibleParentTypes includes: aClass ]
+{ #category : 'testing' }
+SEMethodInvoctationBlueprint >> isParentTypeWildCard [
+	^ methodParentTypes isEmpty
 ]
 
 { #category : 'getter' }

@@ -46,7 +46,7 @@ SEPatternBlueprint >> applyOn: aModel [
 
 	| resultPatterns |
 	methodBlueprints do: [ :blueprint | blueprint model: aModel ].
-	resultPatterns := methodBlueprints first getFirstPatternMethods collect: [ :a |
+	resultPatterns := methodBlueprints first getFirstPatternMethods asOrderedCollection collect: [ :a |
 		                  { a } asOrderedCollection ].
 
 	methodBlueprints allButFirst do: [ :methodBlueprint |
