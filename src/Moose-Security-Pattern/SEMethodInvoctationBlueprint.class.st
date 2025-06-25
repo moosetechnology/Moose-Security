@@ -30,11 +30,46 @@ SEMethodInvoctationBlueprint >> addMethodParentTypes: aCollection [
 	possibleParentTypes := nil.
 ]
 
+{ #category : 'detection' }
+SEMethodInvoctationBlueprint >> allPossibleTypesFor: anObject [
+
+	^ anObject isClass
+		  ifTrue: [ self allPossibleTypesForClass: anObject ]
+		  ifFalse: [ self allPossibleTypesForInterface: anObject ]
+]
+
+{ #category : 'detection' }
+SEMethodInvoctationBlueprint >> allPossibleTypesForClass: aClass [
+
+	| res |
+	res := Set new.
+	(self firstParentHavingTheMethodOfClass: aClass) ifNotNil: [ :a | res add: a. ].
+
+	aClass subInheritances do: [ :inheritance |
+		aClass = inheritance subclass ifFalse: [ res addAll: (self allPossibleTypesForClass: inheritance subclass) ] ].
+	^ res
+]
+
+{ #category : 'detection' }
+SEMethodInvoctationBlueprint >> allPossibleTypesForInterface: anInterface [
+
+	| res |
+	res := Set new.
+	(self firstParentHavingTheMethodOfInterface: anInterface) ifNotNil: [ :a | res add: a].
+
+	anInterface implementations do: [ :implementation |
+		anInterface = implementation implementingClass ifFalse: [ res addAll: (self allPossibleTypesForClass: implementation implementingClass) ] ].
+	anInterface subInheritances do: [ :inheritance |
+		anInterface = inheritance subclass ifFalse: [ res addAll: (self allPossibleTypesForInterface: inheritance subclass) ] ].
+
+	^ res
+]
+
 { #category : 'actions' }
 SEMethodInvoctationBlueprint >> calculatePossibleParentTypes [
 
 	possibleParentTypes := (model allClassesAndInterfacesNamedIn: methodParentTypes) asSet flatCollect: [ :parent |
-		                       self getAllPossibleTypesFor: parent ]
+		                       self allPossibleTypesFor: parent ]
 ]
 
 { #category : 'actions' }
@@ -70,64 +105,11 @@ SEMethodInvoctationBlueprint >> firstParentHavingTheMethodOfInterface: anInterfa
 ]
 
 { #category : 'detection' }
-SEMethodInvoctationBlueprint >> getAllPossibleTypesFor: anObject [
-
-	^ anObject isClass
-		  ifTrue: [ self getAllPossibleTypesForClass: anObject ]
-		  ifFalse: [ self getAllPossibleTypesForInterface: anObject ]
-]
-
-{ #category : 'detection' }
-SEMethodInvoctationBlueprint >> getAllPossibleTypesForClass: aClass [
-
-	| res |
-	res := Set new.
-	(self firstParentHavingTheMethodOfClass: aClass) ifNotNil: [ :a | res add: a. ].
-
-	aClass subInheritances do: [ :inheritance |
-		aClass = inheritance subclass ifFalse: [ res addAll: (self getAllPossibleTypesForClass: inheritance subclass) ] ].
-	^ res
-]
-
-{ #category : 'detection' }
-SEMethodInvoctationBlueprint >> getAllPossibleTypesForInterface: anInterface [
-
-	| res |
-	res := Set new.
-	(self firstParentHavingTheMethodOfInterface: anInterface) ifNotNil: [ :a | res add: a].
-
-	anInterface implementations do: [ :implementation |
-		anInterface = implementation implementingClass ifFalse: [ res addAll: (self getAllPossibleTypesForClass: implementation implementingClass) ] ].
-	anInterface subInheritances do: [ :inheritance |
-		anInterface = inheritance subclass ifFalse: [ res addAll: (self getAllPossibleTypesForInterface: inheritance subclass) ] ].
-
-	^ res
-]
-
-{ #category : 'detection' }
-SEMethodInvoctationBlueprint >> getFirstPatternMethods [
+SEMethodInvoctationBlueprint >> firstPatternMethods [
 
 	^ self isParentTypeWildCard
 		  ifTrue: [ model allMethodsNamed: methodName ]
 		  ifFalse: [ self possibleParentTypes collect: [ :entity | entity methodNamed: methodName ] ]
-]
-
-{ #category : 'detection' }
-SEMethodInvoctationBlueprint >> getMethodsAfter: aMethod [
-
-	| res |
-	res := Set new.
-
-	(aMethod query outgoing objects dependenciesOfType: FamixTInvocation)
-		select: [ :method | method name = self methodName ]
-		thenDo: [ :method | res addAll: (self getAllPossibleTypesFor: method parentType) ].
-
-	^ self isParentTypeWildCard
-		  ifTrue: [ res collect: [ :entity | entity methodNamed: methodName ] ]
-		  ifFalse: [
-				  res
-					  select: [ :entity | self possibleParentTypes includes: entity ]
-					  thenCollect: [ :entity | entity methodNamed: methodName ] ]
 ]
 
 { #category : 'initialization' }
@@ -157,6 +139,24 @@ SEMethodInvoctationBlueprint >> methodName: aString [
 SEMethodInvoctationBlueprint >> methodParentTypes [
 
 	^ methodParentTypes
+]
+
+{ #category : 'detection' }
+SEMethodInvoctationBlueprint >> methodsAfter: aMethod [
+
+	| res |
+	res := Set new.
+
+	(aMethod query outgoing objects dependenciesOfType: FamixTInvocation)
+		select: [ :method | method name = self methodName ]
+		thenDo: [ :method | res addAll: (self allPossibleTypesFor: method parentType) ].
+
+	^ self isParentTypeWildCard
+		  ifTrue: [ res collect: [ :entity | entity methodNamed: methodName ] ]
+		  ifFalse: [
+				  res
+					  select: [ :entity | self possibleParentTypes includes: entity ]
+					  thenCollect: [ :entity | entity methodNamed: methodName ] ]
 ]
 
 { #category : 'getter' }
