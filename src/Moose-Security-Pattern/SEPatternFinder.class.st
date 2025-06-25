@@ -18,9 +18,15 @@ SEPatternFinder class >> allKnownPatterns [
 		  thenCollect: [ :method | self perform: method selector ]
 ]
 
-{ #category : 'instance creation' }
-SEPatternFinder class >> applyOn: aModel [
-	^ self allKnownPatterns flatCollect:[:pattern | pattern applyOn: aModel].
+{ #category : 'detection' }
+SEPatternFinder class >> applyAllOn: aModel [
+
+	| result |
+	result := Dictionary new.
+	
+	self allKnownPatterns do:[:pattern | result at: pattern put: ( pattern applyOn: aModel)].
+	
+	^ result 
 ]
 
 { #category : 'as yet unclassified' }
