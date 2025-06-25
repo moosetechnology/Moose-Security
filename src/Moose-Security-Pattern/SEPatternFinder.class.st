@@ -30,11 +30,11 @@ SEPatternFinder class >> applyAllOn: aModel [
 ]
 
 { #category : 'as yet unclassified' }
-SEPatternFinder class >> badAttributeValueExceptionPattern [
+SEPatternFinder class >> badAttributeValueExpExceptionPattern [
 	"known on JCL-7u21"
 
 	<attackPattern>
-	^ (#readObject methodIn: { #BadAttributeValueException }) calling: (#toString methodIn: {  })
+	^ (#readObject methodIn: { #BadAttributeValueExpException }) calling: (#toString methodIn: {  })
 ]
 
 { #category : 'as yet unclassified' }
