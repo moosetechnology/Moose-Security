@@ -46,14 +46,14 @@ SEPatternBlueprint >> applyOn: aModel [
 
 	| resultPatterns |
 	methodBlueprints do: [ :blueprint | blueprint model: aModel ].
-	resultPatterns := methodBlueprints first firstPatternMethods asOrderedCollection collect: [ :a |
+	resultPatterns := methodBlueprints first selectMethodsAsStartingOfPattern asOrderedCollection collect: [ :a |
 		                  { a } asOrderedCollection ].
 
 	methodBlueprints allButFirst do: [ :methodBlueprint |
 			resultPatterns := resultPatterns
 				                  collect: [ :collection |
 						                  collection
-							                  add: (methodBlueprint methodsAfter: collection last);
+							                  add: (methodBlueprint selectOutgoingInvocationOf: collection last);
 							                  yourself ]
 				                  thenReject: [ :col | col last isEmpty ].
 			resultPatterns := resultPatterns flatCollect: [ :col | col last collect: [ :next | col allButLast copyWith: next ] ] ].

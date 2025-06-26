@@ -50,14 +50,6 @@ SEMethodInvoctationBlueprint >> calling: aSEMethodBlueprint [
 		  yourself
 ]
 
-{ #category : 'detection' }
-SEMethodInvoctationBlueprint >> firstPatternMethods [
-
-	^ self isParentTypeWildCard
-		  ifTrue: [ model allMethods select: [ :method | method name = methodName ] ]
-		  ifFalse: [ self possibleParentTypes collect: [ :entity | entity methodNamed: methodName ] ]
-]
-
 { #category : 'initialization' }
 SEMethodInvoctationBlueprint >> initialize [ 
 	super initialize.
@@ -69,45 +61,10 @@ SEMethodInvoctationBlueprint >> isParentTypeWildCard [
 	^ methodParentTypes isEmpty
 ]
 
-{ #category : 'getter' }
-SEMethodInvoctationBlueprint >> methodName [
-
-	^ methodName
-]
-
 { #category : 'adding' }
 SEMethodInvoctationBlueprint >> methodName: aString [
 
 	methodName := aString
-]
-
-{ #category : 'getter' }
-SEMethodInvoctationBlueprint >> methodParentTypes [
-
-	^ methodParentTypes
-]
-
-{ #category : 'detection' }
-SEMethodInvoctationBlueprint >> methodsAfter: aMethod [
-
-	| res |
-	res := Set new.
-
-	(aMethod query outgoing objects dependenciesOfType: FamixTInvocation)
-		select: [ :method | method name = self methodName ]
-		thenDo: [ :method | res addAll: (method parentType allRelatedTypeHavingTheMethodNamed: methodName) ].
-
-	^ self isParentTypeWildCard
-		  ifTrue: [ res collect: [ :entity | entity methodNamed: methodName ] ]
-		  ifFalse: [
-				  res
-					  select: [ :entity | self possibleParentTypes includes: entity ]
-					  thenCollect: [ :entity | entity methodNamed: methodName ] ]
-]
-
-{ #category : 'getter' }
-SEMethodInvoctationBlueprint >> model [
-	^ model
 ]
 
 { #category : 'getter' }
@@ -130,4 +87,30 @@ SEMethodInvoctationBlueprint >> printBlueprintOn: aStream [
 		ifTrue: [ aStream print: methodParentTypes anyOne ]
 		ifFalse: [ aStream print: methodParentTypes ].
 	aStream << '] '
+]
+
+{ #category : 'detection' }
+SEMethodInvoctationBlueprint >> selectMethodsAsStartingOfPattern [
+
+	^ self isParentTypeWildCard
+		  ifTrue: [ model allMethods select: [ :method | method name = methodName ] ]
+		  ifFalse: [ self possibleParentTypes collect: [ :entity | entity methodNamed: methodName ] ]
+]
+
+{ #category : 'detection' }
+SEMethodInvoctationBlueprint >> selectOutgoingInvocationOf: aMethod [
+
+	| res |
+	res := Set new.
+
+	(aMethod query outgoing objects dependenciesOfType: FamixTInvocation)
+		select: [ :method | method name = methodName ]
+		thenDo: [ :method | res addAll: (method parentType allRelatedTypeHavingTheMethodNamed: methodName) ].
+
+	^ self isParentTypeWildCard
+		  ifTrue: [ res collect: [ :entity | entity methodNamed: methodName ] ]
+		  ifFalse: [
+				  res
+					  select: [ :entity | self possibleParentTypes includes: entity ]
+					  thenCollect: [ :entity | entity methodNamed: methodName ] ]
 ]

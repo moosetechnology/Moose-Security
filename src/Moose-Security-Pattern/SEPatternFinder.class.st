@@ -30,7 +30,7 @@ SEPatternFinder class >> applyAllOn: aModel [
 ]
 
 { #category : 'pattern' }
-SEPatternFinder class >> badAttributeValueExpExceptionPattern [
+SEPatternFinder class >> defineBadAttributeValueExpExceptionPattern [
 	"known on JCL-7u21"
 
 	<attackPattern>
@@ -38,7 +38,7 @@ SEPatternFinder class >> badAttributeValueExpExceptionPattern [
 ]
 
 { #category : 'pattern' }
-SEPatternFinder class >> hashMapPattern1 [
+SEPatternFinder class >> defineHashMapPattern1 [
 	"known on JCL-7u21"
 
 	<attackPattern>
@@ -47,16 +47,25 @@ SEPatternFinder class >> hashMapPattern1 [
 ]
 
 { #category : 'pattern' }
-SEPatternFinder class >> lazyMapPattern [
+SEPatternFinder class >> defineLazyMapPattern1 [
 	" known on commons-collections4-4.0"
 
 	<attackPattern>
 	^ ((#get methodIn: { #LazyMap }) calling: (#transform methodIn: { #ChainedTransformer })) calling:
-		  (#transform methodIn: { #InvokerTransformer. #InstantiateTransformer })
+		  (#transform methodIn: { #InvokerTransformer })
 ]
 
 { #category : 'pattern' }
-SEPatternFinder class >> priorityQueuePattern [
+SEPatternFinder class >> defineLazyMapPattern2 [
+	" known on commons-collections4-4.0"
+
+	<attackPattern>
+	^ ((#get methodIn: { #LazyMap }) calling: (#transform methodIn: { #ChainedTransformer })) calling:
+		  (#transform methodIn: { #InstantiateTransformer })
+]
+
+{ #category : 'pattern' }
+SEPatternFinder class >> definePriorityQueuePattern [
 	"#known on JCL-7u21"
 
 	<attackPattern>
@@ -67,7 +76,7 @@ SEPatternFinder class >> priorityQueuePattern [
 ]
 
 { #category : 'pattern' }
-SEPatternFinder class >> templatesImplPattern1 [
+SEPatternFinder class >> defineTemplatesImplPattern1 [
 	"known on JCL-7u21"
 
 	<attackPattern>
@@ -79,7 +88,7 @@ SEPatternFinder class >> templatesImplPattern1 [
 ]
 
 { #category : 'pattern' }
-SEPatternFinder class >> templatesImplPattern2 [
+SEPatternFinder class >> defineTemplatesImplPattern2 [
 	"known on JCL-7u21"
 
 	<attackPattern>
@@ -90,7 +99,7 @@ SEPatternFinder class >> templatesImplPattern2 [
 ]
 
 { #category : 'pattern' }
-SEPatternFinder class >> transformingComparatorPattern [
+SEPatternFinder class >> defineTransformingComparatorPattern [
 	"known on commons-collections-3.1"
 
 	<attackPattern>
