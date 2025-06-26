@@ -30,46 +30,15 @@ SEMethodInvoctationBlueprint >> addMethodParentTypes: aCollection [
 	possibleParentTypes := nil.
 ]
 
-{ #category : 'detection' }
-SEMethodInvoctationBlueprint >> allPossibleTypesFor: anObject [
-
-	^ anObject isClass
-		  ifTrue: [ self allPossibleTypesForClass: anObject ]
-		  ifFalse: [ self allPossibleTypesForInterface: anObject ]
-]
-
-{ #category : 'detection' }
-SEMethodInvoctationBlueprint >> allPossibleTypesForClass: aClass [
-
-	| res |
-	res := Set new.
-	(self firstParentHavingTheMethodOfClass: aClass) ifNotNil: [ :a | res add: a. ].
-
-	aClass subInheritances do: [ :inheritance |
-		aClass = inheritance subclass ifFalse: [ res addAll: (self allPossibleTypesForClass: inheritance subclass) ] ].
-	^ res
-]
-
-{ #category : 'detection' }
-SEMethodInvoctationBlueprint >> allPossibleTypesForInterface: anInterface [
-
-	| res |
-	res := Set new.
-	(self firstParentHavingTheMethodOfInterface: anInterface) ifNotNil: [ :a | res add: a].
-
-	anInterface implementations do: [ :implementation |
-		anInterface = implementation implementingClass ifFalse: [ res addAll: (self allPossibleTypesForClass: implementation implementingClass) ] ].
-	anInterface subInheritances do: [ :inheritance |
-		anInterface = inheritance subclass ifFalse: [ res addAll: (self allPossibleTypesForInterface: inheritance subclass) ] ].
-
-	^ res
-]
-
 { #category : 'actions' }
 SEMethodInvoctationBlueprint >> calculatePossibleParentTypes [
 
-	possibleParentTypes := (model allClassesAndInterfacesNamedIn: methodParentTypes) asSet flatCollect: [ :parent |
-		                       self allPossibleTypesFor: parent ]
+	self flag: #todo. "allUsing: FamixTWithInheritances gives FamixJavaAnnotationType, maybe it's not usefull and should be filtrated.
+	could be done by writing a method replacing (methodParentTypes includes: entity name) directly in entity and overriding it in FamixJavaAnnotationType"
+
+	possibleParentTypes := (((model allUsing: FamixTWithInheritances) select: [ :entity |
+		                         methodParentTypes includes: entity name ]) flatCollect: [ :parent |
+		                        parent allRelatedTypeHavingTheMethodNamed: methodName ]) asSet
 ]
 
 { #category : 'actions' }
@@ -82,33 +51,10 @@ SEMethodInvoctationBlueprint >> calling: aSEMethodBlueprint [
 ]
 
 { #category : 'detection' }
-SEMethodInvoctationBlueprint >> firstParentHavingTheMethodOfClass: aClass [
-
-	(aClass hasAnImplemetedMethodNamed: methodName) ifTrue: [ ^ aClass ].
-	"doing this first to make sure the class is studied before interfaces (due to java prioritizing classes implementations of methods)"
-
-	aClass superclass ifNotNil: [ :superclass |
-			aClass = superclass ifTrue: [ ^ nil ].
-			(self firstParentHavingTheMethodOfClass: superclass) ifNotNil: [ :res | ^ res ] ].
-	aClass interfaceImplementations do: [ :implementation |
-		(self firstParentHavingTheMethodOfInterface: implementation interface) ifNotNil: [ :res | ^ res ] ].
-	^ nil
-]
-
-{ #category : 'detection' }
-SEMethodInvoctationBlueprint >> firstParentHavingTheMethodOfInterface: anInterface [
-
-	(anInterface hasAnImplemetedMethodNamed: methodName) ifTrue: [ ^ anInterface ].
-
-	^ anInterface superclass ifNotNil: [ :superclass |
-		  anInterface = superclass ifFalse: [ self firstParentHavingTheMethodOfInterface: superclass ] ]
-]
-
-{ #category : 'detection' }
 SEMethodInvoctationBlueprint >> firstPatternMethods [
 
 	^ self isParentTypeWildCard
-		  ifTrue: [ model allMethodsNamed: methodName ]
+		  ifTrue: [ model allMethods select: [ :method | method name = methodName ] ]
 		  ifFalse: [ self possibleParentTypes collect: [ :entity | entity methodNamed: methodName ] ]
 ]
 
@@ -149,7 +95,7 @@ SEMethodInvoctationBlueprint >> methodsAfter: aMethod [
 
 	(aMethod query outgoing objects dependenciesOfType: FamixTInvocation)
 		select: [ :method | method name = self methodName ]
-		thenDo: [ :method | res addAll: (self allPossibleTypesFor: method parentType) ].
+		thenDo: [ :method | res addAll: (method parentType allRelatedTypeHavingTheMethodNamed: methodName) ].
 
 	^ self isParentTypeWildCard
 		  ifTrue: [ res collect: [ :entity | entity methodNamed: methodName ] ]
