@@ -10,7 +10,7 @@ Class {
 	#package : 'Moose-Security-Pattern'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'pattern' }
 SEPatternFinder class >> allKnownPatterns [
 
 	^ self class methods
@@ -29,7 +29,7 @@ SEPatternFinder class >> applyAllOn: aModel [
 	^ result 
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'pattern' }
 SEPatternFinder class >> badAttributeValueExpExceptionPattern [
 	"known on JCL-7u21"
 
@@ -37,7 +37,7 @@ SEPatternFinder class >> badAttributeValueExpExceptionPattern [
 	^ (#readObject methodIn: { #BadAttributeValueExpException }) calling: (#toString methodIn: {  })
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'pattern' }
 SEPatternFinder class >> hashMapPattern1 [
 	"known on JCL-7u21"
 
@@ -46,7 +46,7 @@ SEPatternFinder class >> hashMapPattern1 [
 		   (#hash methodIn: { #HashMap })) calling: (#hashCode methodIn: {  })
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'pattern' }
 SEPatternFinder class >> lazyMapPattern [
 	" known on commons-collections4-4.0"
 
@@ -55,7 +55,7 @@ SEPatternFinder class >> lazyMapPattern [
 		  (#transform methodIn: { #InvokerTransformer. #InstantiateTransformer })
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'pattern' }
 SEPatternFinder class >> priorityQueuePattern [
 	"#known on JCL-7u21"
 
@@ -66,7 +66,7 @@ SEPatternFinder class >> priorityQueuePattern [
 		  (#compare methodIn: { #Comparator })
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'pattern' }
 SEPatternFinder class >> templatesImplPattern1 [
 	"known on JCL-7u21"
 
@@ -78,7 +78,7 @@ SEPatternFinder class >> templatesImplPattern1 [
 		  (#newInstance methodIn: { #Constructor })
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'pattern' }
 SEPatternFinder class >> templatesImplPattern2 [
 	"known on JCL-7u21"
 
@@ -89,7 +89,7 @@ SEPatternFinder class >> templatesImplPattern2 [
 		  (#newInstance methodIn: { #Constructor })
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'pattern' }
 SEPatternFinder class >> transformingComparatorPattern [
 	"known on commons-collections-3.1"
 
