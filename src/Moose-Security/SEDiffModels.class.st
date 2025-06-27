@@ -78,7 +78,7 @@ SEDiffModels >> entitiesTagger [
 
 	| resultDiff |
 	resultDiff := diffModel result.
-	SEVulnerabilityTagger assocChanges: resultDiff associationChanges.
+	SEVulnerabilityTagger tagAllVulnerabilitiesOf: resultDiff associationChanges.
 
 	removedEntites := resultDiff removals collect: [ :e | e entity ].
 	removedEntites ifNotEmpty:  [  
