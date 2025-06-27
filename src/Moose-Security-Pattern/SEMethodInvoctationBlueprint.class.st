@@ -1,5 +1,5 @@
 "
-# Represent a blueprint for a method of a pattern blueprint.
+# Represent a blueprint for a method invocation in a pattern blueprint.
 - modelMethodName : name of the method in the model
 - methodParentTypes : names of the parent types of the method (add nothing to make every class possibles)
 "

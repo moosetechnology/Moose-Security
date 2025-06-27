@@ -1,5 +1,5 @@
 "
-Is a concrete pattern obtained by applyOn: of a SEPatternBlueprint instance that has been detected on the given model
+SEPattern describes a concrete pattern obtained by applyOn: of a SEPatternBlueprint instance that has been detected on the given model
 "
 Class {
 	#name : 'SEPattern',

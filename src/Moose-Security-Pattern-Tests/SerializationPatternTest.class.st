@@ -111,7 +111,7 @@ SerializationPatternTest >> testDontLoopWhenSuperclassIsItself [
 
 	| patterns model class  |
 	
-	self flag: #todo. "how to make the test fail if the method take too much time?"
+	self timeLimit: 1 second.
 	
 	model := FamixJavaModel new name: 'model'.
 

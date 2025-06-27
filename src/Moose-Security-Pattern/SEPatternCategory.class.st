@@ -1,3 +1,6 @@
+"
+SEPatternCategory offer the possibility to categorize an attack pattern for the type of attacks it define
+"
 Class {
 	#name : 'SEPatternCategory',
 	#superclass : 'Object',

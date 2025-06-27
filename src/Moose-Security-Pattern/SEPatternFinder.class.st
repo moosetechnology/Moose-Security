@@ -1,7 +1,14 @@
 "
+SEPatternFinder offer a collection of predefined pattern detected on ysoserial attacks, and possibilites to apply these on a given model
+
+
 # How to use :
 
-- SEPatternFinder applyOn: aModel
+- SEPatternFinder applyAllOn: aModel
+
+- SEPatternFinder define[...] applyOn: aModel
+
+
 "
 Class {
 	#name : 'SEPatternFinder',
