@@ -1,4 +1,7 @@
 "
+SEPatternBlueprint define a pattern of a chained method invocations to the apply on a model and find all possibly existing concretizations of it in the model.
+
+
 # Example of use:
 
 ((#method1 methodIn: { #class1 }) calling: #method2 methodInAll ) applyOn: aModel.
@@ -43,6 +46,7 @@ SEPatternBlueprint >> addMethodBlueprint: aMethodBlueprint [
 
 { #category : 'detection' }
 SEPatternBlueprint >> applyOn: aModel [
+	"Apply itself on a model, and returns all possibles concretizations of itself in it"
 
 	| resultPatterns |
 	methodBlueprints do: [ :blueprint | blueprint model: aModel ].
@@ -66,6 +70,7 @@ SEPatternBlueprint >> applyOn: aModel [
 
 { #category : 'actions' }
 SEPatternBlueprint >> calling: aSEMethodBlueprint [
+	"add a new SEMethodBlueprint for the next method invocation in the pattern"
 
 	^ self
 		  addMethodBlueprint: aSEMethodBlueprint;

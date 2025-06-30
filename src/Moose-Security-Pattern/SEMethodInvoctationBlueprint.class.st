@@ -1,6 +1,8 @@
 "
-# Represent a blueprint for a method invocation in a pattern blueprint.
-- modelMethodName : name of the method in the model
+Represent a blueprint for a method invocation in a pattern blueprint.
+
+# Attributes
+- methodName : name of the method in the model
 - methodParentTypes : names of the parent types of the method (add nothing to make every class possibles)
 "
 Class {
@@ -32,6 +34,7 @@ SEMethodInvoctationBlueprint >> addMethodParentTypes: aCollection [
 
 { #category : 'actions' }
 SEMethodInvoctationBlueprint >> calculatePossibleParentTypes [
+	"Calculate all possible (and searched) parent types where this method could be called"
 
 	self flag: #todo. "allUsing: FamixTWithInheritances gives FamixJavaAnnotationType, maybe it's not usefull and should be filtrated.
 	could be done by writing a method replacing (methodParentTypes includes: entity name) directly in entity and overriding it in FamixJavaAnnotationType"
@@ -43,6 +46,7 @@ SEMethodInvoctationBlueprint >> calculatePossibleParentTypes [
 
 { #category : 'actions' }
 SEMethodInvoctationBlueprint >> calling: aSEMethodBlueprint [
+	"Create a new SEPatternBlueprint with self as the first method invocation and the argument as the next call"
 
 	^ SEPatternBlueprint new
 		  addMethodBlueprint: self;
@@ -74,8 +78,9 @@ SEMethodInvoctationBlueprint >> model: aModel [
 
 { #category : 'getter' }
 SEMethodInvoctationBlueprint >> possibleParentTypes [
-	
-	possibleParentTypes ifNil:[ self calculatePossibleParentTypes ].
+	"Returns all possible (and searched) parent types where this method could be called"
+
+	possibleParentTypes ifNil: [ self calculatePossibleParentTypes ].
 	^ possibleParentTypes
 ]
 
@@ -91,6 +96,7 @@ SEMethodInvoctationBlueprint >> printBlueprintOn: aStream [
 
 { #category : 'detection' }
 SEMethodInvoctationBlueprint >> selectMethodsAsStartingOfPattern [
+	"Returns all the searched concretization of this method invocation as the first invocation of the pattern"
 
 	^ self isParentTypeWildCard
 		  ifTrue: [ model allMethods select: [ :method | method name = methodName ] ]
@@ -99,6 +105,7 @@ SEMethodInvoctationBlueprint >> selectMethodsAsStartingOfPattern [
 
 { #category : 'detection' }
 SEMethodInvoctationBlueprint >> selectOutgoingInvocationOf: aMethod [
+	"Returns all the searched concretization of this method invocation that can appear directly after the given method in a callstack"
 
 	| res |
 	res := Set new.

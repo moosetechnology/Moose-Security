@@ -19,6 +19,7 @@ Class {
 
 { #category : 'pattern' }
 SEPatternFinder class >> allKnownPatterns [
+	"Returns all defined patterns"
 
 	^ self class methods
 		  select: [ :method | method pragmas anySatisfy: [ :pragma | pragma selector = #attackPattern ] ]
@@ -27,6 +28,8 @@ SEPatternFinder class >> allKnownPatterns [
 
 { #category : 'detection' }
 SEPatternFinder class >> applyAllOn: aModel [
+	"Apply all patterns defined on the given model.
+	Returns a dictionnary with the pattern in keys and all its concretizations on the model"
 
 	| result |
 	result := Dictionary new.
