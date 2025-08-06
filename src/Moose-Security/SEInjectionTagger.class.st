@@ -1,8 +1,9 @@
 Class {
 	#name : 'SEInjectionTagger',
 	#superclass : 'SEVulnerabilityTagger',
-	#category : 'Moose-Security',
-	#package : 'Moose-Security'
+	#category : 'Moose-Security-Taggers',
+	#package : 'Moose-Security',
+	#tag : 'Taggers'
 }
 
 { #category : 'default taggers' }
