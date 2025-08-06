@@ -14,7 +14,6 @@ BaselineOfMooseSecurity >> baseline: spec [
 
 			spec
 				package: 'Moose-Security' with: [ spec requires: #( 'FamixDiff' ) ];
-				package: 'MooseIDE-Security' with: [ spec requires: #( 'Moose-Security' ) ];
 				package: 'Moose-Security-Tests' with: [ spec requires: #( 'Moose-Security' ) ];
 				package: 'Moose-Security-Pattern' with: [ spec requires: #( 'Moose-Security' ) ];
 				package: 'Moose-Security-Pattern-Tests' with: [ spec requires: #( 'Moose-Security-Pattern' ) ] ]
