@@ -2,12 +2,7 @@ Class {
 	#name : 'SEDiffModels',
 	#superclass : 'Object',
 	#instVars : [
-		'addedtag',
-		'removedTag',
-		'modifiedTag',
 		'diffModel',
-		'removedEntites',
-		'addedEntites',
 		'assocAddedEntities',
 		'removedEntitesTagged',
 		'addedEntitesTagged',
@@ -44,32 +39,22 @@ SEDiffModels >> diffModel: anObject [
 	diffModel := anObject
 ]
 
-{ #category : 'instance creation' }
-SEDiffModels >> display [
-	self displayDiff: diffModel result
-]
-
-{ #category : 'instance creation' }
-SEDiffModels >> displayBaseModel: baseModel targetModel: targetModel [
-	
-	self baseModel:  baseModel targetModel: targetModel.
-	self display
-]
-
 { #category : 'as yet unclassified' }
-SEDiffModels >> displayDiff: resultDiff [
+SEDiffModels >> display [
 
 	| browser changedEntities |
-	"addedEntitesTagged value miPropagate.
-    
-    browser := MiArchitecturalMapBrowser open.
-    browser beFrozen .
-    browser window title: browser window title , ' [ diff add]'.
+	addedEntitesTagged value miPropagate.
 
-    removedEntitesTagged value miPropagate.
-    browser := MiArchitecturalMapBrowser open.
-    browser beFrozen.
-    browser window title: browser window title , ' [ diff remove]'.""    assocAddedEntities value miPropagate.""1halt."
+	browser := MiArchitecturalMapBrowser open.
+	browser beFrozen.
+	browser window title: browser window title , ' [ diff add]'.
+
+	removedEntitesTagged value miPropagate.
+	browser := MiArchitecturalMapBrowser open.
+	browser beFrozen.
+	browser window title: browser window title , ' [ diff remove]'.
+
+	assocAddedEntities value miPropagate.
 	changedEntities := assocAddedEntities flatCollect: [ :ass | ass source atScope: FamixTType ].
 	changedEntities addAll: (assocAddedEntities flatCollect: [ :ass |
 				 ass target isCollection
@@ -82,6 +67,13 @@ SEDiffModels >> displayDiff: resultDiff [
 	browser window title: browser window title , ' [ diff assosChanges]'
 ]
 
+{ #category : 'instance creation' }
+SEDiffModels >> displayBaseModel: baseModel targetModel: targetModel [
+	
+	self baseModel:  baseModel targetModel: targetModel.
+	self display
+]
+
 { #category : 'as yet unclassified' }
 SEDiffModels >> entitiesTagger [
 
@@ -89,19 +81,17 @@ SEDiffModels >> entitiesTagger [
 	resultDiff := diffModel result.
 	SEVulnerabilityTagger tagAllVulnerabilitiesOf: resultDiff associationChanges.
 
-	removedEntites := resultDiff removals collect: [ :e | e entity ].
-	removedEntites ifNotEmpty: [
-			SEVulnerabilityTagger tagAllVulnerabilitiesOf: removedEntites anyOne mooseModel.
-			removedEntitesTagged := removedEntites select: [ :e | e isTagged ] ].
+	resultDiff removals ifNotEmpty: [ :removedEntites |
+			SEVulnerabilityTagger tagAllVulnerabilitiesOf: removedEntites anyOne entity mooseModel.
+			removedEntitesTagged := removedEntites select: #isTagged ].
 
-	addedEntites := resultDiff additions collect: [ :e | e entity ].
-	addedEntites ifEmpty: [ ^ self ].
-	SEVulnerabilityTagger tagAllVulnerabilitiesOf: addedEntites anyOne mooseModel.
-	addedEntitesTagged := addedEntites select: [ :e | e isTagged ].
+	resultDiff additions ifNotEmpty: [ :addedEntites |
+			SEVulnerabilityTagger tagAllVulnerabilitiesOf: addedEntites anyOne entity mooseModel.
+			addedEntitesTagged := addedEntites select: #isTagged ].
 
 	assocChanges := resultDiff associationChanges allWithType: FamixAddChange.
-	assocAddedEntities := assocChanges collect: [ :e | e entity ]
-	"assocAddedEntitiesTagged := removedEntites collect: [ :e | e isTagged  ]."
+	assocAddedEntities := assocChanges collect: [ :e | e entity ].
+	assocAddedEntitiesTagged := assocAddedEntities collect: [ :e | e isTagged ]
 ]
 
 { #category : 'accessing' }
