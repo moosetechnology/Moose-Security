@@ -3,7 +3,6 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'diffModel',
-		'assocAddedEntities',
 		'removedEntitesTagged',
 		'addedEntitesTagged',
 		'assocAddedEntitiesTagged'
@@ -42,9 +41,8 @@ SEDiffModels >> diffModel: anObject [
 { #category : 'as yet unclassified' }
 SEDiffModels >> display [
 
-	| browser changedEntities |
+	| browser |
 	addedEntitesTagged value miPropagate.
-
 	browser := MiArchitecturalMapBrowser open.
 	browser beFrozen.
 	browser window title: browser window title , ' [ diff add]'.
@@ -54,14 +52,7 @@ SEDiffModels >> display [
 	browser beFrozen.
 	browser window title: browser window title , ' [ diff remove]'.
 
-	assocAddedEntities value miPropagate.
-	changedEntities := assocAddedEntities flatCollect: [ :ass | ass source atScope: FamixTType ].
-	changedEntities addAll: (assocAddedEntities flatCollect: [ :ass |
-				 ass target isCollection
-					 ifTrue: [ ass target flatCollect: [ :c | c atScope: FamixTType ] ]
-					 ifFalse: [ ass target atScope: FamixTType ] ]).
-	(changedEntities reject: #isPrimitiveType) asSet value miPropagate.
-
+	assocAddedEntitiesTagged value miPropagate.
 	browser := MiArchitecturalMapBrowser open.
 	browser beFrozen.
 	browser window title: browser window title , ' [ diff assosChanges]'
@@ -77,21 +68,26 @@ SEDiffModels >> displayBaseModel: baseModel targetModel: targetModel [
 { #category : 'as yet unclassified' }
 SEDiffModels >> entitiesTagger [
 
-	| resultDiff assocChanges |
+	| resultDiff |
 	resultDiff := diffModel result.
-	SEVulnerabilityTagger tagAllVulnerabilitiesOf: resultDiff associationChanges.
 
 	resultDiff removals ifNotEmpty: [ :removedEntites |
 			SEVulnerabilityTagger tagAllVulnerabilitiesOf: removedEntites anyOne entity mooseModel.
-			removedEntitesTagged := removedEntites select: #isTagged ].
+			removedEntitesTagged := removedEntites
+				                        collect: #entity
+				                        thenSelect: #isTagged ].
 
 	resultDiff additions ifNotEmpty: [ :addedEntites |
 			SEVulnerabilityTagger tagAllVulnerabilitiesOf: addedEntites anyOne entity mooseModel.
-			addedEntitesTagged := addedEntites select: #isTagged ].
+			addedEntitesTagged := addedEntites
+				                      collect: #entity
+				                      thenSelect: #isTagged ].
 
-	assocChanges := resultDiff associationChanges allWithType: FamixAddChange.
-	assocAddedEntities := assocChanges collect: [ :e | e entity ].
-	assocAddedEntitiesTagged := assocAddedEntities collect: [ :e | e isTagged ]
+	(resultDiff associationChanges allWithType: FamixAddChange) ifNotEmpty: [ :assocChanges |
+			SEVulnerabilityTagger tagAllVulnerabilitiesOf: (assocChanges collect: #entity).
+			assocAddedEntitiesTagged := assocChanges
+				                            collect: #entity
+				                            thenSelect: #isTagged ]
 ]
 
 { #category : 'accessing' }
