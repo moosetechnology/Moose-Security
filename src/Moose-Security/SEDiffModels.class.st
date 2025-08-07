@@ -1,3 +1,17 @@
+"
+I am a class used to run the diff between two versions of a model and display some maps on it. 
+
+I'll open 3 maps:
+- One with the list of new entities that are vigilance points
+- One with the list of removed vigilance points
+- One with the list of new dependencies to vigilance points
+
+You can open me like this:
+
+```st
+	SEDiffModels displayResultsBetween: commonsCollections30 and: commonsCollections31 
+```
+"
 Class {
 	#name : 'SEDiffModels',
 	#superclass : 'Object',
@@ -10,6 +24,12 @@ Class {
 	#category : 'Moose-Security',
 	#package : 'Moose-Security'
 }
+
+{ #category : 'instance creation' }
+SEDiffModels class >> displayResultsBetween: baseModel and: targetModel [
+
+	^ self new displayBaseModel: baseModel targetModel: targetModel
+]
 
 { #category : 'accessing' }
 SEDiffModels >> addedEntitesTagged [
@@ -38,7 +58,7 @@ SEDiffModels >> diffModel: anObject [
 	diffModel := anObject
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'api' }
 SEDiffModels >> display [
 
 	| browser |
@@ -65,7 +85,7 @@ SEDiffModels >> displayBaseModel: baseModel targetModel: targetModel [
 	self display
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 SEDiffModels >> entitiesTagger [
 
 	| resultDiff |
